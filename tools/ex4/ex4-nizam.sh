@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+# ex4-nizam.sh — Nizam 2.0 Phase 3: the EX4 becomes the master copy of the Nizam record.
+# /data/Nizam/nizam (public repo) + /data/Nizam/nizam-data (private repo, via a deploy key made HERE)
+# + cron every 15 min: pull → build START → commit/push. Touches nothing else. Idempotent.
+# Run as root:  bash /tmp/ex4-nizam.sh
+set -uo pipefail
+NZ=/data/Nizam; KEY=/root/.ssh/nizam_deploy
+echo "== $(date '+%F %T') nizam start"
+mountpoint -q /data || { echo "ERROR: /data not mounted — stop"; exit 1; }
+
+echo "== tools"
+command -v git >/dev/null || { apt-get update -qq && apt-get install -y -qq git; }
+command -v python3 >/dev/null || apt-get install -y -qq python3
+git --version | sed 's/^/git: /'; python3 --version | sed 's/^/python: /'
+git config --global user.name  >/dev/null || git config --global user.name  "ex4-nizam"
+git config --global user.email >/dev/null || git config --global user.email "ex4@nizam.local"
+git config --global pull.rebase true
+
+echo "== deploy key (public half is safe to show)"
+install -d -m 700 /root/.ssh
+[ -f "$KEY" ] || ssh-keygen -t ed25519 -N "" -C "ex4-nizam-deploy" -f "$KEY" -q
+grep -q "nizam_deploy" /root/.ssh/config 2>/dev/null || cat >> /root/.ssh/config <<EOF
+Host github.com
+  IdentityFile $KEY
+  IdentitiesOnly yes
+  StrictHostKeyChecking accept-new
+EOF
+chmod 600 /root/.ssh/config
+echo "-----BEGIN DEPLOY KEY (public)-----"; cat "$KEY.pub"; echo "-----END DEPLOY KEY-----"
+
+echo "== public repo nizam"
+install -d "$NZ"
+if [ -d "$NZ/nizam/.git" ]; then git -C "$NZ/nizam" pull -q && echo "nizam: updated"; else git clone -q https://github.com/farooqmusicai/nizam.git "$NZ/nizam" && echo "nizam: cloned"; fi
+
+echo "== private repo nizam-data (needs the deploy key on GitHub with write access)"
+if [ -d "$NZ/nizam-data/.git" ]; then
+  git -C "$NZ/nizam-data" pull -q && echo "nizam-data: updated" || echo "WARN: nizam-data pull failed"
+else
+  if git clone -q git@github.com:farooqmusicai/nizam-data.git "$NZ/nizam-data" 2>/tmp/nz-clone.err; then echo "nizam-data: cloned"
+  else echo "NEED_DEPLOY_KEY: add the public key above to GitHub → nizam-data → Settings → Deploy keys (Allow write access), then run this again"; sed 's/^/  /' /tmp/nz-clone.err | tail -3; fi
+fi
+
+echo "== sync script + cron (every 15 min)"
+cat > /usr/local/bin/nizam-sync.sh <<'EOF'
+#!/usr/bin/env bash
+# nizam-sync.sh — pull both repos, rebuild START, push if changed. Log: /var/log/nizam-sync.log
+NZ=/data/Nizam; L=/var/log/nizam-sync.log
+{ echo "== $(date '+%F %T')"
+  git -C $NZ/nizam pull -q 2>&1
+  [ -d $NZ/nizam-data/.git ] || { echo "nizam-data missing"; exit 0; }
+  cd $NZ/nizam-data && git pull -q 2>&1
+  python3 $NZ/nizam/tools/build_start.py 2>&1
+  if ! git diff --quiet -- START.md START.ur.md; then
+    git add START.md START.ur.md && git commit -q -m "START rebuilt · ex4 $(date '+%Y-%m-%d %H:%M')" && git push -q 2>&1 && echo "pushed"
+  else echo "no change"; fi
+} >> $L 2>&1
+tail -c 200000 $L > $L.tmp && mv $L.tmp $L
+EOF
+chmod 755 /usr/local/bin/nizam-sync.sh
+echo '*/15 * * * * root /usr/local/bin/nizam-sync.sh' > /etc/cron.d/nizam
+chmod 644 /etc/cron.d/nizam; systemctl is-active cron >/dev/null || systemctl enable --now cron
+echo "cron: /etc/cron.d/nizam installed"
+
+if [ -d "$NZ/nizam-data/.git" ]; then
+  echo "== first sync now"; /usr/local/bin/nizam-sync.sh; tail -6 /var/log/nizam-sync.log | sed 's/^/  /'
+  echo "STATE=READY"
+else
+  echo "STATE=WAITING_FOR_DEPLOY_KEY"
+fi
+echo "== $(date '+%F %T') nizam done"
