@@ -1,2 +1,19 @@
-== 2026-09-13 11:18:14 nizam start
+== 2026-09-13 11:24:53 nizam start
 == tools
+git: git version 2.47.3
+python: Python 3.13.5
+== deploy key (public half is safe to show)
+-----BEGIN DEPLOY KEY (public)-----
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMnP3rs6tCccI4M+xeN1qj9jvQbXFXgGeysrYknNuqof ex4-nizam-deploy
+-----END DEPLOY KEY-----
+== public repo nizam
+nizam: cloned
+== private repo nizam-data (needs the deploy key on GitHub with write access)
+NEED_DEPLOY_KEY: add the public key above to GitHub → nizam-data → Settings → Deploy keys (Allow write access), then run this again
+  
+  Please make sure you have the correct access rights
+  and the repository exists.
+== sync script + cron (every 15 min)
+cron: /etc/cron.d/nizam installed
+STATE=WAITING_FOR_DEPLOY_KEY
+== 2026-09-13 11:25:11 nizam done
