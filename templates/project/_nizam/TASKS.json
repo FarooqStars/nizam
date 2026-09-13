@@ -1,0 +1,3 @@
+{"tasks": [
+  {"id": "T-001", "title": {"en": "…", "ur": "…"}, "state": "pending", "owner": "AI1-Claude1", "escalation": ["AI1-Claude1", "AI2-Claude2", "AI-Zain"], "due": "", "evidence": ""}
+]}

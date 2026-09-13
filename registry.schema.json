@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Nizam registry",
+  "type": "object",
+  "required": ["version", "owner", "projects"],
+  "properties": {
+    "version": {"type": "string"},
+    "owner": {"type": "object", "required": ["name"], "properties": {"name": {"type": "string"}, "timezone": {"type": "string"}}},
+    "projects": {"type": "array", "items": {"$ref": "#/$defs/project"}}
+  },
+  "$defs": {
+    "text2": {"type": "object", "required": ["en", "ur"], "properties": {"en": {"type": "string"}, "ur": {"type": "string"}}},
+    "project": {
+      "type": "object",
+      "required": ["id", "slug", "name", "status", "owner_ai", "escalation", "created"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^FA-[0-9]{3}$"},
+        "slug": {"type": "string"},
+        "name": {"$ref": "#/$defs/text2"},
+        "status": {"enum": ["green", "yellow", "red", "archived"]},
+        "owner_ai": {"type": "string"},
+        "escalation": {"type": "array", "items": {"type": "string"}},
+        "created": {"type": "object", "properties": {"date": {"type": "string"}, "by": {"type": "string"}, "where": {"type": "string"}}},
+        "finish_line": {"type": "string"},
+        "next_step": {"$ref": "#/$defs/text2"},
+        "folders": {"type": "object"},
+        "links": {"type": "array", "items": {"type": "object", "properties": {"label": {"$ref": "#/$defs/text2"}, "url": {"type": "string"}, "kind": {"enum": ["site", "admin", "repo", "console", "health", "doc"]}}}},
+        "maintenance": {"type": "array", "items": {"type": "object", "properties": {"what": {"type": "string"}, "due": {"type": "string"}}}}
+      }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "note": "All badges belong to ONE owner. Keys are NOT stored here — the hosted /api issues them separately.",
+  "agents": [
+    {"badge": "AI1-Claude1", "vendor": "Claude", "account_hint": "account 1", "capabilities": ["files-read", "files-write", "browser", "web-fetch"], "default": true},
+    {"badge": "AI2-Claude2", "vendor": "Claude", "account_hint": "account 2", "capabilities": ["files-read", "files-write", "browser", "web-fetch"]},
+    {"badge": "AI-Zain",     "vendor": "OpenAI", "account_hint": "ChatGPT",   "capabilities": ["web-fetch", "shell-via-owner"]}
+  ],
+  "default_escalation": ["AI1-Claude1", "AI2-Claude2", "AI-Zain"]
+}

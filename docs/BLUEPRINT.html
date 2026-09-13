@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nizam 2.0 — Blueprint</title>
+<style>
+  :root{--bg:#0b1020;--card:#141b31;--line:#243052;--txt:#e8ecf8;--mut:#93a0c4;--acc:#5b8cff;--ok:#22c55e;--warn:#f59e0b;--pink:#f472b6}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font-family:Segoe UI,system-ui,sans-serif;padding:24px 16px 60px;line-height:1.6}
+  body.ur{direction:rtl;font-family:"Noto Nastaliq Urdu","Jameel Noori Nastaleeq",Segoe UI,sans-serif;line-height:2}
+  .wrap{max-width:1100px;margin:auto}
+  .top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+  h1{font-size:30px;margin:0}
+  h2{font-size:22px;margin:34px 0 10px;border-bottom:1px solid var(--line);padding-bottom:6px}
+  h3{font-size:17px;margin:18px 0 6px;color:#c7d2fe}
+  .lang{display:flex;gap:6px;direction:ltr}
+  .lang button{background:#1d2747;border:1px solid var(--line);color:var(--txt);padding:7px 14px;border-radius:10px;cursor:pointer;font-family:Segoe UI,system-ui}
+  .lang button.on{background:var(--acc);border-color:var(--acc);color:#fff}
+  .sub{color:var(--mut);margin-bottom:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:12px 0}
+  .ask{border-color:var(--warn);background:#221a0b}
+  .ask h3{color:#ffd27a;margin-top:0}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+  table{width:100%;border-collapse:collapse;font-size:14.5px}
+  th,td{border:1px solid var(--line);padding:8px 10px;vertical-align:top;text-align:start}
+  th{background:#1d2747}
+  code,.mono{font-family:Consolas,monospace;direction:ltr;unicode-bidi:embed;background:#0f1530;padding:1px 6px;border-radius:6px;font-size:13.5px}
+  pre{background:#0f1530;border:1px solid var(--line);border-radius:10px;padding:12px;overflow:auto;direction:ltr;text-align:left;font-size:13px;line-height:1.5}
+  svg{max-width:100%;height:auto;display:block;margin:10px auto}
+  .svgbox{background:#0f1530;border:1px solid var(--line);border-radius:12px;padding:8px;direction:ltr}
+  .tag{display:inline-block;font-size:12px;padding:2px 9px;border-radius:99px;background:#1d2747;color:var(--mut);direction:ltr}
+  .rule{padding:6px 0;border-bottom:1px dashed var(--line)}
+  footer{color:var(--mut);font-size:13px;text-align:center;margin-top:30px}
+  [data-en],[data-ur]{display:none}
+  body.en [data-en]{display:revert} body.ur [data-ur]{display:revert}
+  body.en span[data-en],body.ur span[data-ur]{display:inline}
+  body.en table[data-en],body.ur table[data-ur]{display:table}
+</style>
+</head>
+<body class="en">
+<div class="wrap">
+
+<div class="top">
+  <h1>🧭 Nizam 2.0 — <span data-en>Blueprint</span><span data-ur>خاکہ</span></h1>
+  <div class="lang"><button id="b-en" class="on" onclick="setLang('en')">English</button><button id="b-ur" onclick="setLang('ur')">اردو</button></div>
+</div>
+<div class="sub" data-en>Farooq's AI-independent command and memory system · v0.1 · 13 Sep 2026 · for approval before any building starts</div>
+<div class="sub" data-ur>فاروق کا AI سے آزاد کمانڈ اور یادداشت کا نظام · v0.1 · 13 Sep 2026 · تعمیر شروع کرنے سے پہلے منظوری کے لیے</div>
+
+<!-- ============ 1. THE PROBLEM / THE PROMISE ============ -->
+<h2 data-en>1 · What this system promises</h2><h2 data-ur>1 · یہ نظام کیا وعدہ کرتا ہے</h2>
+<div class="card">
+  <p data-en>One place holds the truth about every project — ideas, plan, timetable, who is working, what is pending, what is finished. Any AI, on any account, starts every session by reading it and ends every session by writing to it. If everything is lost the next minute, you say <b>"start from there"</b> and the next AI continues exactly where the last one stopped.</p>
+  <p data-ur>ہر پروجیکٹ کا سچ ایک جگہ رہتا ہے — خیالات، منصوبہ، وقت کا نقشہ، کون کام کر رہا ہے، کیا باقی ہے، کیا مکمل ہوا۔ کوئی بھی AI، کسی بھی اکاؤنٹ پر، ہر session کے شروع میں اسے پڑھتا ہے اور آخر میں اس میں لکھتا ہے۔ اگلے منٹ سب کچھ ضائع ہو جائے تو آپ کہیں <b>«یہاں سے شروع کرو»</b> — اگلا AI وہیں سے آگے چلے گا جہاں پچھلا رکا تھا۔</p>
+</div>
+
+<!-- ============ 2. GOLDEN RULES ============ -->
+<h2 data-en>2 · Farooq's golden rules (printed on every START page)</h2><h2 data-ur>2 · فاروق کے سنہری اصول (ہر START صفحے پر چھپے ہوں گے)</h2>
+<div class="card">
+  <div class="rule"><b>1.</b> <span data-en>Read first, then act: memory + this system + the project's LIVE-STATUS. Never assume something does not exist — check.</span><span data-ur>پہلے پڑھو، پھر کام: memory + یہ نظام + پروجیکٹ کا LIVE-STATUS۔ کبھی فرض نہ کرو کہ کوئی چیز موجود نہیں — جانچو۔</span></div>
+  <div class="rule"><b>2.</b> <span data-en>Complicated or unknown? Do not guess from stored notes — ask Farooq and work from his answer.</span><span data-ur>پیچیدہ یا نامعلوم؟ پرانے نوٹس سے اندازہ نہ لگاؤ — فاروق سے پوچھو اور اُس کے جواب پر کام کرو۔</span></div>
+  <div class="rule"><b>3.</b> <span data-en>Follow instructions exactly. Never change, remove or "improve" what was not asked. If something must change, ask first and record the reason.</span><span data-ur>ہدایت کی حرفاً پیروی۔ جو نہیں مانگا وہ نہ بدلو، نہ ہٹاؤ، نہ «بہتر» کرو۔ بدلنا ضروری ہو تو پہلے پوچھو اور وجہ لکھو۔</span></div>
+  <div class="rule"><b>4.</b> <span data-en>One step at a time, with screenshot confirmation. Browser-only tooling; full file replacements, never diffs.</span><span data-ur>ایک وقت میں ایک قدم، screenshot سے تصدیق۔ صرف browser والے اوزار؛ پوری فائل، کبھی diff نہیں۔</span></div>
+  <div class="rule"><b>5.</b> <span data-en>Two separate languages, English and Urdu, never mixed. Numbers always in English digits (1, 2, 3).</span><span data-ur>دو الگ زبانیں، English اور اردو، کبھی mix نہیں۔ اعداد ہمیشہ English digits میں (1، 2، 3)۔</span></div>
+  <div class="rule"><b>6.</b> <span data-en>No spending (API, batch, upgrades, cards) without Farooq's explicit yes. Oracle: never press Upgrade.</span><span data-ur>فاروق کی واضح ہاں کے بغیر کوئی خرچ نہیں (API، batch، upgrade، card)۔ Oracle: کبھی Upgrade نہ دباؤ۔</span></div>
+  <div class="rule"><b>7.</b> <span data-en>Never delete Farooq's files — move to <code>_archive</code> or <code>_to_delete</code>. Never format or recreate a live storage volume (EX4 <code>md2</code>).</span><span data-ur>فاروق کی فائلیں کبھی مٹاؤ نہیں — <code>_archive</code> یا <code>_to_delete</code> میں رکھو۔ زندہ storage volume (EX4 <code>md2</code>) کبھی format/recreate نہیں۔</span></div>
+  <div class="rule"><b>8.</b> <span data-en>Never create parallel copies or new "handoff" files. One live file per project. End every session: STATUS + LOG + agenda + memory.</span><span data-ur>متوازی نقلیں یا نئی «handoff» فائلیں کبھی نہیں۔ ہر پروجیکٹ کی ایک زندہ فائل۔ ہر session کے آخر میں: STATUS + LOG + agenda + memory۔</span></div>
+  <div class="rule"><b>9.</b> <span data-en>Secrets never go into memory or AI-readable files — only into the Vault.</span><span data-ur>راز کبھی memory یا AI کے پڑھنے والی فائلوں میں نہیں — صرف Vault میں۔</span></div>
+  <div class="rule"><b>10.</b> <span data-en>All AI accounts (2 × Claude, OpenAI, future) are the same person: Mohammad Farooq. Every job records which AI did it and who repairs it; if one cannot, or credits end, it passes to the next.</span><span data-ur>سارے AI اکاؤنٹ (2 × Claude، OpenAI، مستقبل کے) ایک ہی شخص ہیں: محمد فاروق۔ ہر کام لکھتا ہے کس AI نے کیا اور مرمت کون کرے گا؛ ایک نہ کر سکے یا credits ختم ہوں تو اگلے کو جائے۔</span></div>
+</div>
+
+<!-- ============ 3. ARCHITECTURE ============ -->
+<h2 data-en>3 · Architecture — where the truth lives and who reads it</h2><h2 data-ur>3 · ڈھانچہ — سچ کہاں رہتا ہے اور کون پڑھتا ہے</h2>
+<div class="svgbox">
+<svg viewBox="0 0 1000 560" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI,sans-serif" font-size="14">
+  <defs><marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#93a0c4"/></marker></defs>
+  <!-- NAS center -->
+  <rect x="360" y="200" width="280" height="150" rx="16" fill="#1d2747" stroke="#5b8cff" stroke-width="2"/>
+  <text x="500" y="230" text-anchor="middle" fill="#fff" font-size="17" font-weight="bold">EX4 NAS · /data/Nizam</text>
+  <text x="500" y="256" text-anchor="middle" fill="#c7d2fe">SINGLE SOURCE OF TRUTH</text>
+  <text x="500" y="282" text-anchor="middle" fill="#93a0c4">registry.json · projects/ · START.md</text>
+  <text x="500" y="304" text-anchor="middle" fill="#93a0c4">Nizam Console (web, login, EN/UR)</text>
+  <text x="500" y="330" text-anchor="middle" fill="#93a0c4">Tailscale 100.102.2.14</text>
+  <!-- PCs -->
+  <rect x="40" y="60" width="220" height="80" rx="12" fill="#141b31" stroke="#243052"/>
+  <text x="150" y="92" text-anchor="middle" fill="#fff" font-weight="bold">HOME-01 (main PC)</text>
+  <text x="150" y="116" text-anchor="middle" fill="#93a0c4">mirror of /data/Nizam · vault</text>
+  <rect x="40" y="420" width="220" height="80" rx="12" fill="#141b31" stroke="#243052"/>
+  <text x="150" y="452" text-anchor="middle" fill="#fff" font-weight="bold">HOME-02 (24/7 brain)</text>
+  <text x="150" y="476" text-anchor="middle" fill="#93a0c4">mirror + Docker jobs + AI</text>
+  <!-- Gateway -->
+  <rect x="740" y="60" width="220" height="90" rx="12" fill="#141b31" stroke="#f472b6"/>
+  <text x="850" y="90" text-anchor="middle" fill="#fff" font-weight="bold">farooqstars.com/start</text>
+  <text x="850" y="112" text-anchor="middle" fill="#93a0c4">public read-only gateway</text>
+  <text x="850" y="134" text-anchor="middle" fill="#93a0c4">+ /api/nizam (write queue)</text>
+  <!-- AIs -->
+  <rect x="740" y="230" width="220" height="110" rx="12" fill="#141b31" stroke="#22c55e"/>
+  <text x="850" y="258" text-anchor="middle" fill="#fff" font-weight="bold">AI accounts</text>
+  <text x="850" y="282" text-anchor="middle" fill="#93a0c4">CL-1 · CL-2 · GPT-1 · …</text>
+  <text x="850" y="304" text-anchor="middle" fill="#93a0c4">"Read /start and continue"</text>
+  <text x="850" y="326" text-anchor="middle" fill="#93a0c4">each has a badge + key</text>
+  <!-- Oracle -->
+  <rect x="740" y="420" width="220" height="80" rx="12" fill="#141b31" stroke="#243052"/>
+  <text x="850" y="452" text-anchor="middle" fill="#fff" font-weight="bold">Oracle fm2-stream</text>
+  <text x="850" y="476" text-anchor="middle" fill="#93a0c4">nightly encrypted copy (offsite)</text>
+  <!-- Phone -->
+  <rect x="390" y="440" width="220" height="70" rx="12" fill="#141b31" stroke="#243052"/>
+  <text x="500" y="468" text-anchor="middle" fill="#fff" font-weight="bold">iPhone / Android</text>
+  <text x="500" y="492" text-anchor="middle" fill="#93a0c4">Console + Files (Tailscale)</text>
+  <!-- arrows -->
+  <line x1="260" y1="100" x2="360" y2="220" stroke="#93a0c4" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="360" y1="240" x2="260" y2="120" stroke="#93a0c4" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="260" y1="450" x2="360" y2="330" stroke="#93a0c4" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="360" y1="310" x2="260" y2="430" stroke="#93a0c4" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="640" y1="230" x2="740" y2="120" stroke="#f472b6" stroke-width="2" marker-end="url(#a)"/>
+  <text x="705" y="160" fill="#f472b6" font-size="12">push every 15 min</text>
+  <line x1="740" y1="100" x2="640" y2="210" stroke="#f472b6" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#a)"/>
+  <text x="560" y="175" fill="#f472b6" font-size="12">pull queue every 5 min</text>
+  <line x1="850" y1="150" x2="850" y2="230" stroke="#22c55e" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="820" y1="230" x2="820" y2="150" stroke="#22c55e" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="640" y1="320" x2="740" y2="450" stroke="#93a0c4" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="500" y1="350" x2="500" y2="440" stroke="#93a0c4" stroke-width="2" marker-end="url(#a)"/>
+</svg>
+</div>
+<div class="card">
+  <p data-en><b>Reading:</b> the NAS is the master. PCs hold mirrors (work offline, PCs may stay off). Every 15 minutes the NAS pushes a read-only <code>START</code> page and the registry to farooqstars.com, so any AI on any account reads it with one sentence — no network drive, no mounting problem. <b>Writing:</b> an AI never touches the NAS directly; it posts to <code>/api/nizam</code> (logs, status, tasks); the NAS pulls that queue every 5 minutes and applies it. Oracle keeps an encrypted nightly copy off-site.</p>
+  <p data-ur><b>پڑھنا:</b> NAS master ہے۔ PCs پر نقلیں (offline کام؛ PCs بند بھی رہ سکتے ہیں)۔ ہر 15 منٹ بعد NAS ایک read-only <code>START</code> صفحہ اور registry farooqstars.com پر بھیجتا ہے، تاکہ کسی بھی اکاؤنٹ پر کوئی بھی AI ایک جملے سے پڑھ لے — نہ network drive، نہ mount کا مسئلہ۔ <b>لکھنا:</b> AI کبھی NAS کو براہِ راست نہیں چھوتا؛ وہ <code>/api/nizam</code> پر بھیجتا ہے (log، status، tasks)؛ NAS ہر 5 منٹ بعد وہ قطار اٹھا کر لاگو کرتا ہے۔ Oracle ہر رات encrypted نقل باہر رکھتا ہے۔</p>
+</div>
+
+<!-- ============ 4. FOLDER LAW ============ -->
+<h2 data-en>4 · Folder law — every project, 3 folders + 1 record folder</h2><h2 data-ur>4 · فولڈر کا قانون — ہر پروجیکٹ، 3 فولڈر + 1 ریکارڈ فولڈر</h2>
+<div class="svgbox">
+<svg viewBox="0 0 1000 300" xmlns="http://www.w3.org/2000/svg" font-family="Consolas,monospace" font-size="14">
+  <rect x="30" y="20" width="940" height="260" rx="14" fill="#141b31" stroke="#243052"/>
+  <text x="50" y="50" fill="#fff" font-size="16" font-weight="bold">/data/Nizam/projects/FA-002-farooq-music/</text>
+  <rect x="60" y="70" width="270" height="180" rx="10" fill="#3b2f12" stroke="#f59e0b"/>
+  <text x="195" y="98" text-anchor="middle" fill="#ffd27a" font-weight="bold">1-working/</text>
+  <text x="195" y="124" text-anchor="middle" fill="#e8ecf8" font-family="Segoe UI">tests · drafts · the mess</text>
+  <text x="195" y="146" text-anchor="middle" fill="#93a0c4" font-family="Segoe UI">deletable when done</text>
+  <text x="195" y="172" text-anchor="middle" fill="#93a0c4" font-family="Segoe UI">counted: files · size · dates</text>
+  <rect x="365" y="70" width="270" height="180" rx="10" fill="#0f2a44" stroke="#5b8cff"/>
+  <text x="500" y="98" text-anchor="middle" fill="#c7d2fe" font-weight="bold">2-source/</text>
+  <text x="500" y="124" text-anchor="middle" fill="#e8ecf8" font-family="Segoe UI">source code · assets</text>
+  <text x="500" y="146" text-anchor="middle" fill="#93a0c4" font-family="Segoe UI">for future updates / releases</text>
+  <text x="500" y="172" text-anchor="middle" fill="#93a0c4" font-family="Segoe UI">mirrors GitHub repo</text>
+  <rect x="670" y="70" width="270" height="180" rx="10" fill="#123b23" stroke="#22c55e"/>
+  <text x="805" y="98" text-anchor="middle" fill="#7ee2a0" font-weight="bold">3-final/</text>
+  <text x="805" y="124" text-anchor="middle" fill="#e8ecf8" font-family="Segoe UI">ready product · deliverable</text>
+  <text x="805" y="146" text-anchor="middle" fill="#93a0c4" font-family="Segoe UI">what goes to web / client / system</text>
+  <text x="805" y="172" text-anchor="middle" fill="#93a0c4" font-family="Segoe UI">versioned releases v1, v2…</text>
+  <text x="500" y="228" text-anchor="middle" fill="#f472b6" font-weight="bold">_nizam/  →  STATUS.md · LOG.md · IDEAS.md · PLAN.md · TASKS.json · MAINTENANCE.md</text>
+  <text x="500" y="252" text-anchor="middle" fill="#93a0c4" font-family="Segoe UI">the project's record — written by every AI, every session; never by hand-copying between AIs</text>
+</svg>
+</div>
+<div class="card">
+  <table data-en>
+    <tr><th>File in <code>_nizam/</code></th><th>Holds</th><th>Who writes</th></tr>
+    <tr><td><code>STATUS.md</code></td><td>The one live file: today's state, decisions, next step ("start from there")</td><td>AI at end of every session</td></tr>
+    <tr><td><code>LOG.md</code></td><td>Timeline: date · AI badge · what was done · evidence</td><td>AI, every task</td></tr>
+    <tr><td><code>IDEAS.md</code></td><td>Ideas parked for later, with date and source</td><td>Farooq / AI</td></tr>
+    <tr><td><code>PLAN.md</code></td><td>Phases, timetable, finish line, gates</td><td>AI with Farooq's approval</td></tr>
+    <tr><td><code>TASKS.json</code></td><td>Daily / pending / blocked tasks, owner AI, escalation chain</td><td>Console + AI</td></tr>
+    <tr><td><code>MAINTENANCE.md</code></td><td>Update calendar: certificates, keys, expiries, backups, checks</td><td>AI</td></tr>
+  </table>
+  <table data-ur>
+    <tr><th><code>_nizam/</code> کی فائل</th><th>کیا رکھتی ہے</th><th>کون لکھتا ہے</th></tr>
+    <tr><td><code>STATUS.md</code></td><td>ایک زندہ فائل: آج کی حالت، فیصلے، اگلا قدم («یہاں سے شروع کرو»)</td><td>AI ہر session کے آخر میں</td></tr>
+    <tr><td><code>LOG.md</code></td><td>تاریخ وار: تاریخ · AI badge · کیا ہوا · ثبوت</td><td>AI، ہر کام پر</td></tr>
+    <tr><td><code>IDEAS.md</code></td><td>بعد کے لیے رکھے خیالات، تاریخ اور ماخذ کے ساتھ</td><td>فاروق / AI</td></tr>
+    <tr><td><code>PLAN.md</code></td><td>مراحل، وقت کا نقشہ، finish line، gates</td><td>AI، فاروق کی منظوری سے</td></tr>
+    <tr><td><code>TASKS.json</code></td><td>روزانہ / باقی / رکے ہوئے کام، ذمہ دار AI، escalation chain</td><td>Console + AI</td></tr>
+    <tr><td><code>MAINTENANCE.md</code></td><td>Update calendar: certificates، keys، expiries، backups، جانچ</td><td>AI</td></tr>
+  </table>
+</div>
+
+<!-- ============ 5. REGISTRY / DATA MODEL ============ -->
+<h2 data-en>5 · The registry — what the console shows for every project</h2><h2 data-ur>5 · Registry — console ہر پروجیکٹ کے لیے کیا دکھائے گا</h2>
+<div class="card">
+<pre>{
+  "id": "FA-002",
+  "name": { "en": "Farooq Music 2.0", "ur": "فاروق میوزک 2.0" },
+  "status": "green",                      // green · yellow · red
+  "owner_ai": "CL-1",                     // who is responsible now
+  "escalation": ["CL-1", "CL-2", "GPT-1"],// if one cannot, or credits end → next
+  "folders": {
+    "1-working": { "files": 1088, "bytes": 5210000000, "last_change": "2026-09-12T23:10" },
+    "2-source":  { "files": 412,  "bytes": 88000000,   "repo": "github.com/farooqmusicai/fm2-platform" },
+    "3-final":   { "files": 37,   "bytes": 12000000,   "release": "fm2-20260912-1" }
+  },
+  "created": { "date": "2026-09-02", "by": "GPT-1", "where": "HOME-01" },
+  "finish_line": "2026-11-18",
+  "next_step": { "en": "Day 12: media ingest v1", "ur": "دن 12: media ingest v1" },
+  "maintenance": [ { "what": "certbot renew check", "due": "2026-12-01" } ],
+  "links": [ "https://stream.farooqmusic.com/health" ]
+}</pre>
+  <p data-en>The console computes file counts, sizes and dates itself by scanning the folders; nobody types them. Every write carries the AI badge, so "who did this" is always answerable.</p>
+  <p data-ur>Console فولڈر scan کر کے فائلوں کی گنتی، size اور تاریخیں خود نکالتا ہے؛ کوئی ہاتھ سے نہیں لکھتا۔ ہر لکھائی پر AI badge ہوتا ہے، اس لیے «یہ کس نے کیا» کا جواب ہمیشہ موجود۔</p>
+</div>
+
+<!-- ============ 6. SESSION FLOW ============ -->
+<h2 data-en>6 · One session, any AI — the loop</h2><h2 data-ur>6 · ایک session، کوئی بھی AI — چکر</h2>
+<div class="svgbox">
+<svg viewBox="0 0 1000 170" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI,sans-serif" font-size="13">
+  <defs><marker id="b" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5b8cff"/></marker></defs>
+  <g fill="#141b31" stroke="#243052"><rect x="20" y="40" width="170" height="80" rx="12"/><rect x="220" y="40" width="170" height="80" rx="12"/><rect x="420" y="40" width="170" height="80" rx="12"/><rect x="620" y="40" width="170" height="80" rx="12"/><rect x="820" y="40" width="160" height="80" rx="12"/></g>
+  <g fill="#fff" text-anchor="middle" font-weight="bold"><text x="105" y="70">1 · READ</text><text x="305" y="70">2 · CLAIM</text><text x="505" y="70">3 · WORK</text><text x="705" y="70">4 · WRITE</text><text x="900" y="70">5 · HANDOFF</text></g>
+  <g fill="#93a0c4" text-anchor="middle"><text x="105" y="92">/start + STATUS</text><text x="105" y="108">golden rules</text><text x="305" y="92">task → owner = me</text><text x="305" y="108">badge CL-1</text><text x="505" y="92">one step, screenshot</text><text x="505" y="108">files in 1-working</text><text x="705" y="92">LOG + STATUS + TASKS</text><text x="705" y="108">via /api/nizam</text><text x="900" y="92">next AI or Farooq</text><text x="900" y="108">START regenerates</text></g>
+  <g stroke="#5b8cff" stroke-width="2" marker-end="url(#b)"><line x1="190" y1="80" x2="220" y2="80"/><line x1="390" y1="80" x2="420" y2="80"/><line x1="590" y1="80" x2="620" y2="80"/><line x1="790" y1="80" x2="820" y2="80"/></g>
+  <path d="M900,120 Q900,155 500,155 Q105,155 105,120" fill="none" stroke="#5b8cff" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#b)"/>
+</svg>
+</div>
+<div class="card">
+  <p data-en><b>Escalation:</b> a task has an owner AI and a chain. If the owner says "cannot", or Farooq's credits/limits on that account end, the task is marked <span class="tag">handoff</span> and the next AI in the chain sees it at the top of its <code>/start</code>. Nothing is retyped — the same STATUS and LOG are read.</p>
+  <p data-ur><b>Escalation:</b> ہر کام کا ایک ذمہ دار AI اور ایک chain ہے۔ ذمہ دار «نہیں کر سکتا» کہے، یا اُس اکاؤنٹ کے credits/limits ختم ہوں، تو کام پر <span class="tag">handoff</span> لگتا ہے اور chain کا اگلا AI اسے اپنے <code>/start</code> کے اوپر دیکھتا ہے۔ کچھ دوبارہ نہیں لکھا جاتا — وہی STATUS اور LOG پڑھے جاتے ہیں۔</p>
+</div>
+
+<!-- ============ 7. CONSOLE ============ -->
+<h2 data-en>7 · Nizam Console — the web interface (EN / UR)</h2><h2 data-ur>7 · Nizam Console — web interface (EN / UR)</h2>
+<div class="grid">
+  <div class="card"><h3 data-en>Projects</h3><h3 data-ur>پروجیکٹس</h3><p data-en>Cards with light, owner AI, next step, files/size per folder, created date/place, finish line.</p><p data-ur>ہر کارڈ پر بتی، ذمہ دار AI، اگلا قدم، ہر فولڈر کی فائلیں/size، بننے کی تاریخ/جگہ، finish line۔</p></div>
+  <div class="card"><h3 data-en>Folders</h3><h3 data-ur>فولڈرز</h3><p data-en>Create / rename / archive folders by the law; File Browser embedded for upload, download, preview.</p><p data-ur>قانون کے مطابق فولڈر بنانا / نام بدلنا / archive کرنا؛ upload، download، preview کے لیے File Browser اندر۔</p></div>
+  <div class="card"><h3 data-en>Tasks</h3><h3 data-ur>کام</h3><p data-en>Today · pending · blocked · handoff. Owner AI, chain, due date, evidence link.</p><p data-ur>آج · باقی · رکے · handoff۔ ذمہ دار AI، chain، آخری تاریخ، ثبوت کا link۔</p></div>
+  <div class="card"><h3 data-en>Ideas & Plan</h3><h3 data-ur>خیالات اور منصوبہ</h3><p data-en>Park an idea from the phone in 10 seconds; plans with phases and gates.</p><p data-ur>فون سے 10 سیکنڈ میں خیال محفوظ؛ مراحل اور gates والے منصوبے۔</p></div>
+  <div class="card"><h3 data-en>Maintenance</h3><h3 data-ur>دیکھ بھال</h3><p data-en>Calendar of expiries (certificates, JWT secrets, Oracle trial, PAR), backup results, disk health.</p><p data-ur>expiry کا calendar (certificates، JWT secrets، Oracle trial، PAR)، backup کے نتائج، disk کی صحت۔</p></div>
+  <div class="card"><h3 data-en>AI & Access</h3><h3 data-ur>AI اور رسائی</h3><p data-en>Badges CL-1, CL-2, GPT-1…; each with a key; who did what; Farooq = one person on all.</p><p data-ur>Badges CL-1، CL-2، GPT-1…؛ ہر ایک کی key؛ کس نے کیا کیا؛ سب پر فاروق = ایک شخص۔</p></div>
+</div>
+
+<!-- ============ 8. SAFETY / RECOVERY ============ -->
+<h2 data-en>8 · "Everything blown away" — the recovery chain</h2><h2 data-ur>8 · «سب کچھ اڑ گیا» — واپسی کی زنجیر</h2>
+<div class="card">
+  <table data-en>
+    <tr><th>Lost</th><th>Still exists</th><th>Recovery</th></tr>
+    <tr><td>One AI account / its memory</td><td>NAS + /start</td><td>Any other AI: "read /start, continue" — minutes</td></tr>
+    <tr><td>A PC</td><td>NAS master + other PC mirror</td><td>Re-sync mirror — hours</td></tr>
+    <tr><td>The NAS</td><td>PC mirrors + Oracle nightly copy</td><td>Rebuild NAS from PC mirror — a day</td></tr>
+    <tr><td>Home (fire/theft)</td><td>Oracle encrypted copy + farooqstars.com START</td><td>Restore to any new server — days</td></tr>
+  </table>
+  <table data-ur>
+    <tr><th>ضائع ہوا</th><th>پھر بھی موجود</th><th>واپسی</th></tr>
+    <tr><td>ایک AI اکاؤنٹ / اُس کی memory</td><td>NAS + /start</td><td>کوئی بھی دوسرا AI: «/start پڑھو، آگے چلو» — منٹوں میں</td></tr>
+    <tr><td>ایک PC</td><td>NAS master + دوسرے PC کی نقل</td><td>نقل دوبارہ sync — گھنٹوں میں</td></tr>
+    <tr><td>NAS</td><td>PC کی نقلیں + Oracle کی رات والی نقل</td><td>PC کی نقل سے NAS دوبارہ — ایک دن</td></tr>
+    <tr><td>گھر (آگ/چوری)</td><td>Oracle کی encrypted نقل + farooqstars.com START</td><td>کسی بھی نئے server پر بحالی — چند دن</td></tr>
+  </table>
+</div>
+
+<!-- ============ 9. PHASES ============ -->
+<h2 data-en>9 · Build phases (gate over date)</h2><h2 data-ur>9 · تعمیر کے مراحل (تاریخ نہیں، gate)</h2>
+<div class="card">
+  <table data-en>
+    <tr><th>#</th><th>Phase</th><th>Delivers</th><th>Gate to pass</th></tr>
+    <tr><td>0</td><td>This blueprint</td><td>Approved design + answers to the questions below</td><td>Farooq says "approved"</td></tr>
+    <tr><td>1</td><td>Folder law + registry</td><td><code>/data/Nizam</code> on EX4, folder template, <code>registry.json</code>, one pilot project (FA-010 system)</td><td>Pilot project readable on phone via File Browser</td></tr>
+    <tr><td>2</td><td>START gateway</td><td><code>farooqstars.com/start</code> (read) + <code>/api/nizam</code> (write queue); NAS push 15 min / pull 5 min</td><td>A fresh Claude chat and ChatGPT both continue a task from /start alone</td></tr>
+    <tr><td>3</td><td>Mirrors</td><td>HOME-01 + HOME-02 mirror of /data/Nizam (Syncthing), Oracle nightly encrypted copy</td><td>Pull the NAS plug: work continues from a PC; plug back: merges</td></tr>
+    <tr><td>4</td><td>Nizam Console v1</td><td>Projects · Folders · Tasks · Ideas · Maintenance · AI badges, EN/UR</td><td>Farooq manages a project from the phone without any AI</td></tr>
+    <tr><td>5</td><td>Migration</td><td>All projects moved in, one by one, old law folders archived</td><td>Old vault has no live files left</td></tr>
+    <tr><td>6</td><td>Automation</td><td>Escalation, credit-limit handoff, maintenance alerts, monthly restore test</td><td>A task passes CL-1 → CL-2 by itself</td></tr>
+  </table>
+  <table data-ur>
+    <tr><th>#</th><th>مرحلہ</th><th>کیا ملتا ہے</th><th>Gate</th></tr>
+    <tr><td>0</td><td>یہ خاکہ</td><td>منظور شدہ design + نیچے کے سوالوں کے جواب</td><td>فاروق کہے «منظور»</td></tr>
+    <tr><td>1</td><td>فولڈر قانون + registry</td><td>EX4 پر <code>/data/Nizam</code>، فولڈر template، <code>registry.json</code>، ایک pilot پروجیکٹ (FA-010 system)</td><td>Pilot پروجیکٹ فون پر File Browser سے پڑھا جا سکے</td></tr>
+    <tr><td>2</td><td>START gateway</td><td><code>farooqstars.com/start</code> (پڑھنا) + <code>/api/nizam</code> (لکھنے کی قطار)؛ NAS push 15 منٹ / pull 5 منٹ</td><td>نئی Claude chat اور ChatGPT دونوں صرف /start سے کام آگے بڑھائیں</td></tr>
+    <tr><td>3</td><td>نقلیں</td><td>HOME-01 + HOME-02 پر /data/Nizam کی نقل (Syncthing)، Oracle پر رات کی encrypted نقل</td><td>NAS کا plug نکالیں: PC سے کام چلے؛ واپس لگائیں: merge ہو</td></tr>
+    <tr><td>4</td><td>Nizam Console v1</td><td>Projects · Folders · Tasks · Ideas · Maintenance · AI badges، EN/UR</td><td>فاروق کسی AI کے بغیر فون سے پروجیکٹ سنبھالے</td></tr>
+    <tr><td>5</td><td>منتقلی</td><td>سارے پروجیکٹ ایک ایک کر کے اندر، پرانے فولڈر archive</td><td>پرانے vault میں کوئی زندہ فائل نہ رہے</td></tr>
+    <tr><td>6</td><td>Automation</td><td>Escalation، credit-limit handoff، maintenance alerts، ماہانہ restore test</td><td>ایک کام خود CL-1 → CL-2 چلا جائے</td></tr>
+  </table>
+</div>
+
+<!-- ============ 10. QUESTIONS FOR FAROOQ ============ -->
+<h2 data-en>10 · Decisions only Farooq can make (rule 2 — no assuming)</h2><h2 data-ur>10 · فیصلے جو صرف فاروق کر سکتے ہیں (اصول 2 — کوئی اندازہ نہیں)</h2>
+<div class="card ask">
+  <h3 data-en>Please answer these before Phase 1</h3><h3 data-ur>مرحلہ 1 سے پہلے ان کے جواب دیں</h3>
+  <ol>
+    <li><span data-en><b>Name</b> of the system: "Nizam 2.0", "Farooq Command Center", or your own?</span><span data-ur>نظام کا <b>نام</b>: «Nizam 2.0»، «Farooq Command Center»، یا آپ کا اپنا؟</span></li>
+    <li><span data-en><b>Where the Console runs:</b> (a) on the EX4 itself (always on, ARMv5 — simple pages only), (b) on HOME-02 (powerful, but PC must be on), (c) on farooqstars.com (always on, cloud, data pushed from NAS). My reading of your words: source = NAS, so (a) for data and (c) for the public START. Confirm?</span><span data-ur><b>Console کہاں چلے:</b> (a) خود EX4 پر (ہمیشہ on، ARMv5 — سادہ صفحات)، (b) HOME-02 پر (طاقتور، مگر PC on ہو)، (c) farooqstars.com پر (ہمیشہ on، cloud، data NAS سے آئے)۔ آپ کے الفاظ سے میں سمجھا: source = NAS، تو data کے لیے (a) اور عوامی START کے لیے (c)۔ تصدیق؟</span></li>
+    <li><span data-en><b>Old vault law</b> (<code>D:\Obsidian\Farooq</code>, <code>_Claude\</code>, <code>_CodebaseMemory\</code>): migrate into the new 3-folder law, or keep both side by side for a while?</span><span data-ur><b>پرانا vault قانون</b> (<code>D:\Obsidian\Farooq</code>، <code>_Claude\</code>، <code>_CodebaseMemory\</code>): نئے 3-فولڈر قانون میں منتقل، یا کچھ عرصہ دونوں ساتھ ساتھ؟</span></li>
+    <li><span data-en><b>AI badges:</b> which account is CL-1 (main), CL-2, GPT-1? And the escalation order when credits end?</span><span data-ur><b>AI badges:</b> کون سا اکاؤنٹ CL-1 (اصل)، CL-2، GPT-1؟ اور credits ختم ہونے پر escalation کی ترتیب؟</span></li>
+    <li><span data-en><b>Public START page:</b> fully public (anyone with the link can read your project status) or locked with a key in the link (recommended)?</span><span data-ur><b>عوامی START صفحہ:</b> مکمل public (link والا کوئی بھی پروجیکٹ کی حالت پڑھ لے) یا link میں key کے ساتھ locked (میری رائے)؟</span></li>
+    <li><span data-en><b>Pilot project</b> for Phase 1: FA-010 (this backup/system work) — or another?</span><span data-ur>مرحلہ 1 کا <b>pilot پروجیکٹ</b>: FA-010 (یہی backup/system کا کام) — یا کوئی اور؟</span></li>
+  </ol>
+</div>
+
+<footer><span data-en>Nizam 2.0 Blueprint v0.1 · 13 Sep 2026 · file: _Claude\sync-system\NIZAM-2-BLUEPRINT.html · nothing is built until "approved"</span><span data-ur>Nizam 2.0 خاکہ v0.1 · 13 Sep 2026 · فائل: _Claude\sync-system\NIZAM-2-BLUEPRINT.html · «منظور» سے پہلے کچھ نہیں بنتا</span></footer>
+</div>
+<script>
+function setLang(l){document.body.className=l;document.documentElement.lang=l;document.getElementById('b-en').className=l==='en'?'on':'';document.getElementById('b-ur').className=l==='ur'?'on':'';try{localStorage.setItem('nz-lang',l)}catch(e){}}
+try{setLang(localStorage.getItem('nz-lang')||'en')}catch(e){setLang('en')}
+</script>
+</body>
+</html>
