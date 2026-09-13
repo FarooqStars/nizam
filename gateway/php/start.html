@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>START — Nizam 2.0</title>
+<!-- FarooqStars 2.0 — start.html (Nizam 2.0 · v0.1 · 13 Sep 2026)
+     The one page any AI (or Farooq on his phone) opens first. Data: api/nizam.php → GitHub nizam-data.
+     Lock: Farooq's Google login (same two e-mails as the agenda). No secrets on this page. -->
+<style>
+  :root{--bg:#070d1e;--card:#101a33;--line:#223055;--txt:#e9e4d6;--mut:#93a0c4;--acc:#5b8cff;--gold:#f0c060}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font-family:Segoe UI,system-ui,sans-serif;padding:18px 14px 60px;line-height:1.6}
+  body.ur{direction:rtl;font-family:"Noto Nastaliq Urdu","Jameel Noori Nastaleeq",Segoe UI,sans-serif;line-height:2}
+  .wrap{max-width:980px;margin:auto}
+  .top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  h1{font-size:24px;margin:0}
+  .lang{display:flex;gap:6px;direction:ltr}
+  .btn{background:#1a2647;border:1px solid var(--line);color:var(--txt);padding:7px 13px;border-radius:10px;cursor:pointer;font-size:14px;font-family:Segoe UI,system-ui;text-decoration:none;display:inline-block}
+  .btn.on,.btn.p{background:var(--acc);border-color:var(--acc);color:#fff}
+  .btn.g{background:var(--gold);border-color:var(--gold);color:#111}
+  .bar{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+  .mut{color:var(--mut);font-size:13px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:12px 0}
+  .gate{text-align:center;padding:40px 16px}
+  #md h1{font-size:22px;margin:18px 0 6px} #md h2{font-size:19px;margin:22px 0 8px;border-bottom:1px solid var(--line);padding-bottom:4px} #md h3{font-size:16px;margin:16px 0 4px;color:#c7d2fe}
+  #md blockquote{border-inline-start:3px solid var(--gold);margin:8px 0;padding:4px 12px;color:#ffe9b3}
+  #md pre{background:#0b1226;border:1px solid var(--line);border-radius:10px;padding:10px;overflow:auto;direction:ltr;text-align:left;font-size:12.5px}
+  #md code{font-family:Consolas,monospace;background:#0b1226;padding:1px 5px;border-radius:5px;font-size:13px;direction:ltr;unicode-bidi:embed}
+  #md a{color:#8fb0ff} #md ul,#md ol{padding-inline-start:22px} #md hr{border:0;border-top:1px solid var(--line)}
+  form label{display:block;margin:8px 0 4px;font-size:14px}
+  input,select,textarea{width:100%;background:#0b1226;border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:8px;font-family:inherit;font-size:14px}
+  textarea{min-height:70px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:10px} @media(max-width:600px){.row{grid-template-columns:1fr}}
+  .toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#1d2747;border:1px solid var(--line);padding:9px 16px;border-radius:10px;display:none}
+  details summary{cursor:pointer;color:var(--mut)}
+  [data-en],[data-ur]{display:none} body.en [data-en]{display:revert} body.ur [data-ur]{display:revert}
+  body.en span[data-en],body.ur span[data-ur]{display:inline}
+</style>
+</head>
+<body class="en">
+<div class="wrap">
+  <div class="top">
+    <h1>🧭 START — Nizam 2.0</h1>
+    <div class="lang"><button class="btn on" id="b-en" onclick="setLang('en')">English</button><button class="btn" id="b-ur" onclick="setLang('ur')">اردو</button></div>
+  </div>
+  <div class="mut" id="who"></div>
+
+  <div id="gate" class="card gate" hidden>
+    <p data-en>This page is locked. Log in with your Google account (only Farooq's two e-mails can open it), then come back here.</p>
+    <p data-ur>یہ صفحہ بند ہے۔ اپنے Google اکاؤنٹ سے login کریں (صرف فاروق کے دو ای میل کھول سکتے ہیں)، پھر یہاں واپس آئیں۔</p>
+    <a class="btn p" href="login.html?next=start.html">Login</a>
+  </div>
+
+  <div id="app" hidden>
+    <div class="bar">
+      <button class="btn g" onclick="copyForAI()"><span data-en>📋 Copy for AI</span><span data-ur>📋 AI کے لیے نقل</span></button>
+      <button class="btn" onclick="load(true)"><span data-en>🔄 Refresh</span><span data-ur>🔄 تازہ</span></button>
+      <a class="btn" href="agenda.html"><span data-en>Agenda</span><span data-ur>روزنامچہ</span></a>
+      <a class="btn" href="https://github.com/farooqmusicai/nizam" target="_blank">nizam (public)</a>
+      <a class="btn" href="https://github.com/farooqmusicai/nizam-data" target="_blank">nizam-data 🔒</a>
+    </div>
+    <div class="mut" id="built"></div>
+
+    <div class="card">
+      <details>
+        <summary><span data-en>✍️ Write from here (LOG line / idea / task) — commits straight to GitHub</span><span data-ur>✍️ یہیں سے لکھیں (LOG سطر / خیال / کام) — سیدھا GitHub میں commit</span></summary>
+        <form id="wf" onsubmit="return send(event)">
+          <div class="row">
+            <div><label data-en>Project</label><label data-ur>پروجیکٹ</label><select id="f-project"></select></div>
+            <div><label data-en>What</label><label data-ur>کیا</label>
+              <select id="f-kind"><option value="log:NOTE">LOG · NOTE</option><option value="log:DONE">LOG · DONE</option><option value="log:DECISION">LOG · DECISION</option><option value="log:HANDOFF">LOG · HANDOFF</option><option value="idea">IDEA</option></select></div>
+          </div>
+          <label data-en>Text (no passwords, no keys — rule 9)</label><label data-ur>متن (کوئی password، کوئی key نہیں — اصول 9)</label>
+          <textarea id="f-text" required></textarea>
+          <label data-en>Evidence (link / file name) — optional</label><label data-ur>ثبوت (link / فائل کا نام) — اختیاری</label>
+          <input id="f-ev">
+          <div class="bar"><button class="btn p" type="submit"><span data-en>Save to GitHub</span><span data-ur>GitHub میں محفوظ</span></button></div>
+        </form>
+      </details>
+    </div>
+
+    <div class="card" id="admin" hidden>
+      <details>
+        <summary><span data-en>⚙️ Owner setup — GitHub token · AI badge tokens</span><span data-ur>⚙️ مالک کی ترتیب — GitHub token · AI badge tokens</span></summary>
+        <p class="mut" data-en>The GitHub token is stored on the server only (fs-var, outside the web root). It is never shown again. Fine-grained token · repository nizam-data · Contents: read and write.</p>
+        <p class="mut" data-ur>GitHub token صرف server پر رہتا ہے (fs-var، web root سے باہر)۔ دوبارہ کبھی نہیں دکھتا۔ Fine-grained token · repository nizam-data · Contents: read and write۔</p>
+        <div class="row">
+          <div><input id="a-gh" placeholder="github_pat_…" autocomplete="off"><div class="bar"><button class="btn" onclick="setup()"><span data-en>Save GitHub token</span><span data-ur>GitHub token محفوظ</span></button></div></div>
+          <div><input id="a-badge" placeholder="AI1-Claude1"><div class="bar"><button class="btn" onclick="mint()"><span data-en>Mint badge token</span><span data-ur>Badge token بنائیں</span></button></div></div>
+        </div>
+        <pre id="a-out" hidden></pre>
+      </details>
+    </div>
+
+    <div class="card"><div id="md"></div></div>
+    <p class="mut" data-en>Any AI: <code>Read https://farooqstars.com/api/nizam.php?action=start&fmt=md (header X-Nizam-Token) and continue from where it stopped.</code></p>
+    <p class="mut" data-ur>کوئی بھی AI: <code>Read https://farooqstars.com/api/nizam.php?action=start&fmt=md (header X-Nizam-Token) and continue from where it stopped.</code></p>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+var LANG = 'en', MD = '', WHO = null, REG = null;
+function setLang(l){ LANG = l; document.body.className = l; document.documentElement.lang = l;
+  document.getElementById('b-en').className = 'btn' + (l==='en'?' on':''); document.getElementById('b-ur').className = 'btn' + (l==='ur'?' on':'');
+  try{ localStorage.setItem('nz-lang', l) }catch(e){} if (WHO) load(false); }
+function toast(t){ var e = document.getElementById('toast'); e.textContent = t; e.style.display = 'block'; setTimeout(function(){ e.style.display = 'none' }, 2500); }
+function api(q, body){ var o = body ? {method:'POST', credentials:'include', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)} : {credentials:'include'};
+  return fetch('api/nizam.php' + (q ? '?' + q : ''), o).then(function(r){ return r.json().then(function(j){ j.__status = r.status; return j; }); }); }
+function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+/* tiny markdown → html (headings, lists, code, links, bold, quotes, hr) */
+function render(md){
+  var lines = md.split('\n'), out = [], inCode = false, inList = null;
+  function closeList(){ if (inList){ out.push('</' + inList + '>'); inList = null; } }
+  function inline(s){ s = esc(s); s = s.replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>').replace(/\[([^\]]+)\]\((https?:[^)]+)\)/g, '<a href="$2" target="_blank">$1</a>'); return s; }
+  lines.forEach(function(l){
+    if (l.trim().indexOf('```') === 0){ if (inCode){ out.push('</pre>'); inCode = false; } else { closeList(); out.push('<pre>'); inCode = true; } return; }
+    if (inCode){ out.push(esc(l)); return; }
+    var m;
+    if ((m = l.match(/^(#{1,3})\s+(.*)/))){ closeList(); out.push('<h' + m[1].length + '>' + inline(m[2]) + '</h' + m[1].length + '>'); return; }
+    if (/^---+\s*$/.test(l)){ closeList(); out.push('<hr>'); return; }
+    if ((m = l.match(/^>\s?(.*)/))){ closeList(); out.push('<blockquote>' + inline(m[1]) + '</blockquote>'); return; }
+    if ((m = l.match(/^\s*[-*]\s+(.*)/))){ if (inList !== 'ul'){ closeList(); out.push('<ul>'); inList = 'ul'; } out.push('<li>' + inline(m[1]) + '</li>'); return; }
+    if ((m = l.match(/^\s*\d+\.\s+(.*)/))){ if (inList !== 'ol'){ closeList(); out.push('<ol>'); inList = 'ol'; } out.push('<li>' + inline(m[1]) + '</li>'); return; }
+    if (l.trim() === ''){ closeList(); return; }
+    closeList(); out.push('<p>' + inline(l) + '</p>');
+  });
+  closeList(); if (inCode) out.push('</pre>');
+  return out.join('\n');
+}
+function load(fresh){
+  api('action=start&lang=' + LANG + (fresh ? '&t=' + Date.now() : '')).then(function(j){
+    if (j.__status === 401){ document.getElementById('gate').hidden = false; document.getElementById('app').hidden = true; return; }
+    if (!j.ok){ toast('error: ' + (j.err || '')); return; }
+    document.getElementById('gate').hidden = true; document.getElementById('app').hidden = false;
+    MD = j.md; document.getElementById('md').innerHTML = render(MD);
+    var b = MD.match(/·\s*(\d{4}-\d{2}-\d{2} \d{2}:\d{2})/); document.getElementById('built').textContent = b ? ((LANG==='en'?'START built: ':'START بنا: ') + b[1] + ' Doha') : '';
+  });
+}
+function copyForAI(){
+  var head = 'You are one of Mohammad Farooq\'s AI assistants. Read this START page fully, then continue exactly from where the last AI stopped. Follow the golden rules. At the end write LOG + STATUS via api/nizam.php.\n\n';
+  navigator.clipboard.writeText(head + MD).then(function(){ toast(LANG==='en'?'Copied — paste into any AI':'نقل ہو گئی — کسی بھی AI میں paste کریں'); });
+}
+function send(e){ e.preventDefault();
+  var kind = document.getElementById('f-kind').value.split(':'), body = {project: document.getElementById('f-project').value, text: document.getElementById('f-text').value, evidence: document.getElementById('f-ev').value};
+  if (kind[0] === 'log'){ body.action = 'log'; body.type = kind[1]; } else { body.action = 'idea'; }
+  api('', body).then(function(j){ if (j.ok){ toast(LANG==='en'?'Saved to GitHub':'GitHub میں محفوظ'); document.getElementById('f-text').value=''; document.getElementById('f-ev').value=''; } else toast('error: ' + (j.err||'')); });
+  return false;
+}
+function setup(){ api('', {action:'setup', github_token: document.getElementById('a-gh').value}).then(function(j){ document.getElementById('a-gh').value=''; show(j); }); }
+function mint(){ api('', {action:'mint', badge: document.getElementById('a-badge').value}).then(show); }
+function show(j){ var o = document.getElementById('a-out'); o.hidden = false; o.textContent = JSON.stringify(j, null, 2); }
+api('action=whoami').then(function(j){
+  if (j.__status === 401){ document.getElementById('gate').hidden = false; return; }
+  WHO = j; document.getElementById('who').textContent = (LANG==='en'?'opened as: ':'کھلا بطور: ') + j.who + ' · GitHub token: ' + j.github + ' · badges: ' + (j.badges||[]).join(', ');
+  if (j.who === 'owner') document.getElementById('admin').hidden = false;
+  api('action=registry').then(function(r){ if (!r.ok) return; REG = r.registry; var s = document.getElementById('f-project'); s.innerHTML = '';
+    (REG.projects||[]).forEach(function(p){ var o = document.createElement('option'); o.value = p.id; o.textContent = p.id + ' — ' + (p.name[LANG]||p.name.en); s.appendChild(o); }); });
+  load(false);
+});
+try{ setLang(localStorage.getItem('nz-lang') || 'en') }catch(e){ setLang('en') }
+</script>
+</body>
+</html>
