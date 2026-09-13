@@ -133,7 +133,7 @@ function render(md){
 function load(fresh){
   api('action=start&lang=' + LANG + (fresh ? '&t=' + Date.now() : '')).then(function(j){
     if (j.__status === 401){ document.getElementById('gate').hidden = false; document.getElementById('app').hidden = true; return; }
-    if (!j.ok){ toast('error: ' + (j.err || '')); return; }
+    if (!j.ok){ if (j.err !== 'github-read') toast('error: ' + (j.err || '')); return; }
     document.getElementById('gate').hidden = true; document.getElementById('app').hidden = false;
     MD = j.md; document.getElementById('md').innerHTML = render(MD);
     var b = MD.match(/·\s*(\d{4}-\d{2}-\d{2} \d{2}:\d{2})/); document.getElementById('built').textContent = b ? ((LANG==='en'?'START built: ':'START بنا: ') + b[1] + ' Doha') : '';
@@ -155,7 +155,9 @@ function show(j){ var o = document.getElementById('a-out'); o.hidden = false; o.
 api('action=whoami').then(function(j){
   if (j.__status === 401){ document.getElementById('gate').hidden = false; return; }
   WHO = j; document.getElementById('who').textContent = (LANG==='en'?'opened as: ':'کھلا بطور: ') + j.who + ' · GitHub token: ' + j.github + ' · badges: ' + (j.badges||[]).join(', ');
+  document.getElementById('gate').hidden = true; document.getElementById('app').hidden = false;
   if (j.who === 'owner') document.getElementById('admin').hidden = false;
+  if (j.github === 'missing') document.getElementById('md').innerHTML = '<p>' + (LANG==='en' ? '⚙️ Step 1: open “Owner setup” above and save the GitHub token once.' : '⚙️ قدم 1: اوپر «مالک کی ترتیب» کھول کر GitHub token ایک بار محفوظ کریں۔') + '</p>';
   api('action=registry').then(function(r){ if (!r.ok) return; REG = r.registry; var s = document.getElementById('f-project'); s.innerHTML = '';
     (REG.projects||[]).forEach(function(p){ var o = document.createElement('option'); o.value = p.id; o.textContent = p.id + ' — ' + (p.name[LANG]||p.name.en); s.appendChild(o); }); });
   load(false);
