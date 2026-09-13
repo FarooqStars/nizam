@@ -16,7 +16,7 @@
    GET  action=start&lang=en|ur[&fmt=md]          → START.md / START.ur.md (cache 5 min)
    GET  action=file&path=projects/…/_nizam/STATUS.md[&fmt=raw]
    GET  action=registry                            → registry.json
-   POST {action:'log',    project, type, text, evidence?}   → append line to LOG.md
+   POST {action:'log',    project, type, text, evidence?}   → append line to LOG.md   (badge token: GET works too — ?action=log&project=FA-0xx&type=NOTE&text=…&token=…)
    POST {action:'status', project, content}                 → replace STATUS.md
    POST {action:'idea',   project, text}                    → append to IDEAS.md
    POST {action:'task',   project, id, state, owner?, evidence?} → TASKS.json
@@ -40,7 +40,7 @@ if (!is_file($cfg)) { echo json_encode(['ok'=>false,'err'=>'config-missing']); e
 require $cfg;
 require __DIR__ . '/fs-db.php';
 
-const NZ_VERSION = '0.3 (2026-09-13 · schedules + doc inbox)';
+const NZ_VERSION = '0.4 (2026-09-13 · GET writes for badges)';
 const NZ_OWNERS  = ['babaqatar@gmail.com', 'baba867@gmail.com'];
 const NZ_REPO    = 'farooqmusicai/nizam-data';
 const NZ_BRANCH  = 'main';
@@ -217,7 +217,8 @@ if ($action === 'schedule') {
 }
 
 /* ============================ write (commit to GitHub) ============================ */
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') nz_out(['ok'=>false, 'err'=>'POST'], 405);
+/* badges (AI accounts) may write log / idea / task by GET too — many AI chat tools can only fetch a URL. Owner session stays POST-only. */
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' && !($badge && in_array($action, ['log','idea','task'], true))) nz_out(['ok'=>false, 'err'=>'POST'], 405);
 $pid = strtoupper(trim((string)($in['project'] ?? ''))); $slug = preg_match('/^FA-[0-9]{3}$/', $pid) ? nz_project_slug($pid) : null;
 if (!$slug) nz_out(['ok'=>false, 'err'=>'project (FA-000) not in registry'], 400);
 $base = "projects/$slug/_nizam/";
