@@ -48,6 +48,26 @@ def human(b):
         b /= 1024
     return f"{b:.1f} PB"
 
+def plan_block(slug, lang):
+    tp = os.path.join(ROOT, "projects", slug, "_nizam", "TASKS.json")
+    if not os.path.exists(tp): return ""
+    j = json.load(open(tp, encoding="utf-8")); ts = j.get("tasks", [])
+    if not ts or not any(t.get("phase") for t in ts): return ""
+    today = datetime.date.today().isoformat()
+    ph = {}
+    for t in ts:
+        p = ph.setdefault(t["phase"], [0, 0, t.get("gate")]); p[0] += 1; p[1] += t.get("state") == "done"
+        if t.get("gate"): p[2] = t["gate"]
+    cur = next((k for k, v in ph.items() if v[1] < v[0]), None)
+    done = sum(1 for t in ts if t.get("state") == "done")
+    L = [("**Plan:** " if lang == "en" else "**منصوبہ:** ") + f"{done}/{len(ts)} " + ("tasks" if lang == "en" else "کام") + " · " + ("phase" if lang == "en" else "مرحلہ") + f" **{cur or '—'}**" + (f" → {ph[cur][2]}" if cur and ph[cur][2] else "")]
+    L.append(" ".join(("✅" if v[1] == v[0] else "🟡" if v[1] else "⬜") + k for k, v in ph.items()))
+    td = [t for t in ts if t.get("state") != "done" and t.get("due") == today]
+    nx = [t for t in ts if t.get("state") != "done"][:3]
+    if td: L.append(("**Today:** " if lang == "en" else "**آج:** ") + " · ".join(f"{t['id']} {t['title'].get(lang, t['title'].get('en',''))} ({t.get('owner','')})" for t in td[:5]))
+    if nx: L.append(("**Next:** " if lang == "en" else "**اگلا:** ") + " · ".join(f"{t['id']} {t['title'].get(lang, t['title'].get('en',''))} ({t.get('owner','')})" for t in nx))
+    return "\n".join(L) + "\n"
+
 handoffs = []
 for pr in reg["projects"]:
     tp = os.path.join(ROOT, "projects", pr["slug"], "_nizam", "TASKS.json")
@@ -77,6 +97,7 @@ def build(lang):
         if pr.get("links"):
             o.append("links: " + " · ".join(f"[{L(l['label'])}]({l['url']})" for l in pr["links"]))
         o.append("")
+        o.append(plan_block(pr["slug"], lang))
         o.append(section(pr["slug"], pr["id"]))
         lt = log_tail(pr["slug"])
         if lt: o.append("\n```\n" + lt + "\n```")
