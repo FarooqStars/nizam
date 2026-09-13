@@ -23,7 +23,7 @@
   .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:12px 0}
   .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
   .proj{border-inline-start:4px solid var(--warn)} .proj.green{border-color:var(--ok)} .proj.red{border-color:var(--bad)} .proj.archived{border-color:#555}
-  .fold{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0}
+  .fold{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0}
   .fold div{background:#0b1226;border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:12.5px;direction:ltr;text-align:left}
   .fold b{display:block;color:#c7d2fe}
   .tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:99px;background:#1d2747;color:var(--mut);direction:ltr}
@@ -56,6 +56,8 @@
     <div class="bar">
       <a class="btn g" href="start.html">START</a>
       <a class="btn" href="agenda.html"><span data-en>Agenda</span><span data-ur>روزنامچہ</span></a>
+      <a class="btn" href="nizam-guide.html"><span data-en>📖 Guide</span><span data-ur>📖 رہنما</span></a>
+      <a class="btn" href="nizam-reader.html"><span data-en>📄 Docs reader</span><span data-ur>📄 دستاویزات</span></a>
       <button class="btn" onclick="loadAll()"><span data-en>🔄 Refresh</span><span data-ur>🔄 تازہ</span></button>
       <a class="btn" href="http://100.102.2.14:8080" target="_blank"><span data-en>NAS files</span><span data-ur>NAS فائلیں</span></a>
       <a class="btn" href="https://100.102.2.14:10000/" target="_blank">Webmin</a>
@@ -129,7 +131,9 @@ function renderProjects(){
     h+='<div class="card proj '+esc(p.status)+'"><h2>'+light(p.status)+' '+esc(p.id)+' — '+esc(nm(p.name))+'</h2>';
     h+='<div class="mut">'+T('owner','ذمہ دار')+': <b>'+esc(p.owner_ai)+'</b> · '+T('chain','chain')+': '+esc((p.escalation||[]).join(' → '))+' · '+T('finish line','finish line')+': '+esc(p.finish_line||'—')+'</div>';
     h+='<div class="mut">'+T('created','بنا')+': '+esc((p.created||{}).date||'')+' · '+esc((p.created||{}).by||'')+' · '+esc((p.created||{}).where||'')+'</div>';
-    h+='<div class="fold">'; ['1-working','2-source','3-final'].forEach(function(f){ var s=st?st[f]:null; h+='<div><b>'+f+'</b>'+(s?(s.files+' files · '+human(s.bytes)+(s.last_change?'<br>'+s.last_change:'')):'—')+'</div>'; }); h+='</div>';
+    h+='<div class="fold">'; ['0-docs','1-working','2-source','3-final'].forEach(function(f){ var s=st?st[f]:null; h+='<div><b>'+f+'</b>'+(s?(s.files+' files · '+human(s.bytes)+(s.last_change?'<br>'+s.last_change:'')):'—')+'</div>'; }); h+='</div>';
+    var dc = STATS && STATS.projects[p.id] ? STATS.projects[p.id].docs : null;
+    if (dc && dc.latest) h+='<div class="mut">📄 '+T('latest doc','تازہ ترین دستاویز')+': <b dir="ltr">'+esc(dc.latest.n)+'</b> · '+dc.count+' '+T('docs','دستاویزات')+' · <a href="nizam-reader.html" target="_blank">'+T('open reader','reader کھولیں')+'</a></div>';
     if (nm(p.next_step)) h+='<div>➡️ '+esc(nm(p.next_step))+'</div>';
     if (p.links&&p.links.length) h+='<div class="bar">'+p.links.map(function(l){return '<a class="btn s" href="'+esc(l.url)+'" target="_blank">'+esc(nm(l.label))+'</a>';}).join('')+'</div>';
     h+='<div class="bar"><button class="btn s p" onclick="openProject(\''+esc(p.id)+'\')">'+T('Open record','ریکارڈ کھولیں')+'</button>'+(st?'<span class="tag">\\\\ex4\\Nizam\\'+esc(p.slug)+'</span>':'')+'</div>';

@@ -51,3 +51,6 @@ An alarm is defined in `projects/<slug>/_nizam/SCHEDULE.json` and its prompt in 
 
 ## 3-final → server — added 13 Sep 2026
 `_nizam/DEPLOY.json` (enabled=false = dry-run) + `tools/ex4/nizam-deploy.sh` on the NAS. Blueprint: `docs/DEPLOY-BLUEPRINT.md`.
+
+## 0-docs — added 13 Sep 2026
+Every project has a 4th folder `0-docs` for all its documents (md/txt/docx/pdf). The NAS cron (`tools/nizam_folders.py`) numbers each file `NNNN-name.ext`; highest = latest; `stats.json` carries count + latest per project, START and the Console show it. Reader: `gateway/php/nizam-reader.html` (reads Y:\ locally in the browser, remembers the folder, renders md/txt/docx/pdf).

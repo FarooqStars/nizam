@@ -31,7 +31,7 @@ def folder_stats(path):
             if v.get("slug") == path:
                 return {k: (f["files"], f["bytes"]) for k, f in v["folders"].items() if k != "_archive"}
     out = {}
-    for f in ("1-working", "2-source", "3-final"):
+    for f in ("0-docs", "1-working", "2-source", "3-final"):
         d = os.path.join(ROOT, "projects", path, f); files = 0; size = 0
         for r, _, fs in os.walk(d):
             for x in fs:
@@ -126,6 +126,9 @@ def build(lang):
         o.append(f"### {light.get(pr['status'],'⚪')} {pr['id']} — {L(pr['name'])}")
         o.append(f"owner: **{pr.get('owner_ai','')}** · escalation: {' → '.join(pr.get('escalation', []))} · finish line: {pr.get('finish_line','—')}")
         o.append(f"folders: " + " · ".join(f"{k} {v[0]} files / {human(v[1])}" for k, v in st.items()))
+        dstat = (STATS or {}).get("projects", {}).get(pr["id"], {}).get("docs") if STATS else None
+        if dstat and dstat.get("latest"):
+            o.append(("docs (0-docs): " if lang == "en" else "دستاویزات (0-docs): ") + f"{dstat['count']} · " + ("latest" if lang == "en" else "تازہ ترین") + f" **{dstat['latest']['n']}** ({dstat['latest']['mtime']})")
         if pr.get("links"):
             o.append("links: " + " · ".join(f"[{L(l['label'])}]({l['url']})" for l in pr["links"]))
         o.append("")
