@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# ex4-nizam.sh — Nizam 2.0 Phase 3: the EX4 becomes the master copy of the Nizam record.
+# ex4-nizam.sh v2 — Nizam 2.0 Phase 3 + 4b: the EX4 is the master copy of the Nizam record, builds START/stats/schedules,
+# and (v2) runs nizam-deploy.sh (3-final → server, dry-run until DEPLOY.json enabled=true) + Oracle nightly copy.
 # /data/Nizam/nizam (public repo) + /data/Nizam/nizam-data (private repo, via a deploy key made HERE)
 # + cron every 15 min: pull → build START → commit/push. Touches nothing else. Idempotent.
 # Run as root:  bash /tmp/ex4-nizam.sh
@@ -69,8 +70,9 @@ NZ=/data/Nizam; L=/var/log/nizam-sync.log
   cd $NZ/nizam-data && git pull -q 2>&1
   python3 $NZ/nizam/tools/nizam_folders.py $NZ/projects 2>&1
   python3 $NZ/nizam/tools/build_start.py 2>&1
-  if ! git diff --quiet -- START.md START.ur.md stats.json; then
-    git add START.md START.ur.md stats.json && git commit -q -m "START + stats · ex4 $(date '+%Y-%m-%d %H:%M')" && git push -q 2>&1 && echo "pushed"
+  git add START.md START.ur.md stats.json schedules.json projects/*/_nizam/LOG.md 2>/dev/null
+  if ! git diff --cached --quiet; then
+    git commit -q -m "START + stats + schedules · ex4 $(date '+%Y-%m-%d %H:%M')" && git push -q 2>&1 && echo "pushed"
   else echo "no change"; fi
 } >> $L 2>&1
 tail -c 200000 $L > $L.tmp && mv $L.tmp $L
@@ -79,6 +81,16 @@ chmod 755 /usr/local/bin/nizam-sync.sh
 echo '*/15 * * * * root /usr/local/bin/nizam-sync.sh' > /etc/cron.d/nizam
 chmod 644 /etc/cron.d/nizam; systemctl is-active cron >/dev/null || systemctl enable --now cron
 echo "cron: /etc/cron.d/nizam installed"
+
+echo "== deploy + oracle-backup scripts (from the public repo)"
+for f in nizam-deploy.sh ex4-oracle-backup.sh; do
+  [ -f "$NZ/nizam/tools/ex4/$f" ] && install -m 755 "$NZ/nizam/tools/ex4/$f" /usr/local/bin/$f && echo "installed /usr/local/bin/$f"
+done
+cat > /etc/cron.d/nizam-deploy <<'EOF3'
+*/5 * * * * root [ -x /usr/local/bin/nizam-deploy.sh ] && /usr/local/bin/nizam-deploy.sh
+15 3 * * * root [ -x /usr/local/bin/ex4-oracle-backup.sh ] && /usr/local/bin/ex4-oracle-backup.sh
+EOF3
+chmod 644 /etc/cron.d/nizam-deploy; echo "cron: nizam-deploy every 5 min (dry-run until DEPLOY.json enabled) · oracle backup 03:15 nightly"
 
 if [ -d "$NZ/nizam-data/.git" ]; then
   echo "== first sync now"; /usr/local/bin/nizam-sync.sh; tail -6 /var/log/nizam-sync.log | sed 's/^/  /'

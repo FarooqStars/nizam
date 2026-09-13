@@ -20,6 +20,11 @@
    POST {action:'status', project, content}                 → replace STATUS.md
    POST {action:'idea',   project, text}                    → append to IDEAS.md
    POST {action:'task',   project, id, state, owner?, evidence?} → TASKS.json
+   GET  action=schedules                           → schedules.json (NAS cron builds it from every _nizam/SCHEDULE.json)
+   GET|POST action=schedule&project=FA-001&id=S-001&op=claim|done|failed|skip|pause|resume[&days=2][&note=…]
+                                                   → updates that project's _nizam/SCHEDULE.json + one LOG line.
+                                                     GET is allowed so a cloud alarm can call it with WebFetch (short URL).
+                                                     pause / resume = owner only; claim/done/failed/skip = any badge.
    POST {action:'setup',  github_token}   owner only → store token (fs-var)
    POST {action:'mint',   badge}          owner only → new badge token (shown once)
    POST {action:'revoke', badge}          owner only
@@ -33,7 +38,7 @@ if (!is_file($cfg)) { echo json_encode(['ok'=>false,'err'=>'config-missing']); e
 require $cfg;
 require __DIR__ . '/fs-db.php';
 
-const NZ_VERSION = '0.1 (2026-09-13)';
+const NZ_VERSION = '0.2 (2026-09-13 · schedules)';
 const NZ_OWNERS  = ['babaqatar@gmail.com', 'baba867@gmail.com'];
 const NZ_REPO    = 'farooqmusicai/nizam-data';
 const NZ_BRANCH  = 'main';
@@ -74,8 +79,9 @@ function nz_safe_path($p){
   $p = str_replace('\\', '/', (string)$p);
   if ($p === '' || strpos($p, '..') !== false) return null;
   $ok = preg_match('#^projects/FA-[0-9]{3}-[a-z0-9-]+/_nizam/(STATUS|LOG|IDEAS|PLAN|MAINTENANCE)\.md$#', $p)
-     || preg_match('#^projects/FA-[0-9]{3}-[a-z0-9-]+/_nizam/TASKS\.json$#', $p)
-     || in_array($p, ['START.md','START.ur.md','RULES.md','RULES.ur.md','registry.json','agents.json','stats.json'], true);
+     || preg_match('#^projects/FA-[0-9]{3}-[a-z0-9-]+/_nizam/(TASKS|SCHEDULE|DEPLOY)\.json$#', $p)
+     || preg_match('#^projects/FA-[0-9]{3}-[a-z0-9-]+/_nizam/prompts/S-[0-9]{3}\.md$#', $p)
+     || in_array($p, ['START.md','START.ur.md','RULES.md','RULES.ur.md','registry.json','agents.json','stats.json','schedules.json'], true);
   return $ok ? $p : null;
 }
 function nz_project_slug($id){
@@ -113,6 +119,7 @@ if ($action === 'start') {
   if (($in['fmt'] ?? '') === 'md') { header('Content-Type: text/markdown; charset=utf-8'); echo $md; exit; }
   nz_out(['ok'=>true, 'who'=>$who, 'lang'=>$lang, 'md'=>$md]);
 }
+if ($action === 'schedules') { [$c] = nz_read('schedules.json'); nz_out(['ok'=>true, 'schedules'=>$c === null ? null : json_decode($c, true), 'note'=>$c === null ? 'schedules.json not built yet (NAS cron, every 15 min)' : '']); }
 if ($action === 'stats') { [$c] = nz_read('stats.json'); nz_out(['ok'=>true, 'stats'=>$c === null ? null : json_decode($c, true)]); }
 if ($action === 'registry') { [$c] = nz_read('registry.json'); if ($c === null) nz_out(['ok'=>false,'err'=>'github-read'], 502); nz_out(['ok'=>true, 'registry'=>json_decode($c, true)]); }
 if ($action === 'file') {
@@ -170,6 +177,43 @@ if ($action === 'project') {
   nz_audit('owner', "project $id"); nz_out(['ok'=>true, 'id'=>$id, 'slug'=>$slug, 'note'=>'folders on the NAS appear within 15 min (cron)']);
 }
 
+/* ============================ schedules (GET or POST — alarms call this from the cloud) ============================ */
+if ($action === 'schedule') {
+  $pid = strtoupper(trim((string)($in['project'] ?? ''))); $slug = preg_match('/^FA-[0-9]{3}$/', $pid) ? nz_project_slug($pid) : null;
+  if (!$slug) nz_out(['ok'=>false, 'err'=>'project (FA-000) not in registry'], 400);
+  $sid = strtoupper(trim((string)($in['id'] ?? ''))); if (!preg_match('/^S-[0-9]{3}$/', $sid)) nz_out(['ok'=>false, 'err'=>'id S-000'], 400);
+  $op = strtolower(trim((string)($in['op'] ?? ''))); if (!in_array($op, ['claim','done','failed','skip','pause','resume'], true)) nz_out(['ok'=>false, 'err'=>'op'], 400);
+  if (in_array($op, ['pause','resume'], true) && !$isOwner) nz_out(['ok'=>false, 'err'=>'owner-only'], 403);
+  $note = mb_substr(trim(preg_replace('/[\r\n]+/', ' ', (string)($in['note'] ?? ''))), 0, 300);
+  if (preg_match('/(ghp_|github_pat_|sk-[A-Za-z0-9]{10}|tskey-|AGK-[0-9a-f]{8}|BEGIN [A-Z ]*PRIVATE KEY|password\s*[:=]\s*\S{6,})/i', $note)) nz_out(['ok'=>false, 'err'=>'secret-refused (rule 9)'], 400);
+  $path = "projects/$slug/_nizam/SCHEDULE.json";
+  [$c, $sha] = nz_read($path); $j = json_decode((string)$c, true); if (!is_array($j)) nz_out(['ok'=>false, 'err'=>'no SCHEDULE.json for ' . $pid], 404);
+  $found = null; foreach ($j['schedules'] as $k => $s) if (($s['id'] ?? '') === $sid) $found = $k;
+  if ($found === null) nz_out(['ok'=>false, 'err'=>'schedule not found'], 404);
+  $s = &$j['schedules'][$found]; $today = nz_doha('Y-m-d'); $now = nz_doha();
+  $last = $s['last_run'] ?? [];
+  if ($op === 'claim') {
+    /* another badge already claimed this slot today and is not failed → refuse (watchdog rule) */
+    if (($last['date'] ?? '') === $today && in_array($last['state'] ?? '', ['claimed','done'], true) && ($last['badge'] ?? '') !== $who)
+      nz_out(['ok'=>false, 'err'=>'already-' . $last['state'], 'by'=>$last['badge'], 'at'=>$last['at'] ?? '', 'hint'=>'stop — this slot is taken'], 409);
+    if (!empty($s['paused_until']) && $s['paused_until'] >= $today) nz_out(['ok'=>false, 'err'=>'paused', 'until'=>$s['paused_until'], 'hint'=>'stop — owner paused this schedule'], 409);
+    $s['last_run'] = ['date'=>$today, 'at'=>$now, 'badge'=>$who, 'state'=>'claimed', 'note'=>$note];
+  } elseif ($op === 'done' || $op === 'failed' || $op === 'skip') {
+    $s['last_run'] = ['date'=>$today, 'at'=>$now, 'badge'=>$who, 'state'=>$op === 'skip' ? 'skipped' : $op, 'note'=>$note];
+    if ($op === 'done') { $s['runs_done'] = (int)($s['runs_done'] ?? 0) + 1; $s['last_done'] = $today; }
+    if ($op === 'failed') $s['fails'] = (int)($s['fails'] ?? 0) + 1;
+  } elseif ($op === 'pause') {
+    $days = max(1, min(60, (int)($in['days'] ?? 1))); $s['paused_until'] = gmdate('Y-m-d', time() + 3 * 3600 + $days * 86400 - 86400); $s['paused_by'] = 'owner';
+  } else { $s['paused_until'] = ''; $s['paused_by'] = ''; }
+  unset($s); $j['updated'] = $now;
+  $r = nz_write($path, json_encode($j, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) . "\n", "SCHEDULE $pid $sid $op · $who", $sha);
+  if ($r !== true) nz_out(['ok'=>false, 'err'=>$r], 502);
+  $type = ['claim'=>'CLAIM','done'=>'DONE','failed'=>'BLOCKED','skip'=>'NOTE','pause'=>'DECISION','resume'=>'DECISION'][$op];
+  [$lc, $lsha] = nz_read("projects/$slug/_nizam/LOG.md");
+  if ($lc !== null) nz_write("projects/$slug/_nizam/LOG.md", rtrim($lc, "\n") . "\n" . "$now · $who · $type · schedule $sid $op" . ($note !== '' ? " · $note" : '') . "\n", "LOG $pid · $who · schedule $op", $lsha);
+  nz_audit($who, "schedule $pid $sid $op"); nz_out(['ok'=>true, 'project'=>$pid, 'id'=>$sid, 'op'=>$op, 'by'=>$who, 'at'=>$now, 'schedule'=>$j['schedules'][$found]]);
+}
+
 /* ============================ write (commit to GitHub) ============================ */
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') nz_out(['ok'=>false, 'err'=>'POST'], 405);
 $pid = strtoupper(trim((string)($in['project'] ?? ''))); $slug = preg_match('/^FA-[0-9]{3}$/', $pid) ? nz_project_slug($pid) : null;
@@ -177,7 +221,7 @@ if (!$slug) nz_out(['ok'=>false, 'err'=>'project (FA-000) not in registry'], 400
 $base = "projects/$slug/_nizam/";
 $clean = fn($s, $n) => mb_substr(trim(preg_replace('/[\r\n]+/', ' ', (string)$s)), 0, $n);
 /* rule 9 — refuse obvious secrets */
-$looksSecret = fn($s) => (bool)preg_match('/(ghp_|github_pat_|sk-[A-Za-z0-9]{10}|tskey-|BEGIN [A-Z ]*PRIVATE KEY|password\s*[:=]\s*\S{6,})/i', (string)$s);
+$looksSecret = fn($s) => (bool)preg_match('/(ghp_|github_pat_|sk-[A-Za-z0-9]{10}|tskey-|AGK-[0-9a-f]{8}|BEGIN [A-Z ]*PRIVATE KEY|password\s*[:=]\s*\S{6,})/i', (string)$s);
 
 if ($action === 'log') {
   $type = strtoupper($clean($in['type'] ?? 'NOTE', 10)); if (!in_array($type, NZ_TYPES, true)) $type = 'NOTE';

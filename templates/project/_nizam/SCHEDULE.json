@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "note": "Alarms of this project. Every AI account carries the SAME alarm; the badge differs. Before working, an alarm calls nizam.php action=schedule op=claim — if the slot is already claimed/done today or paused, it stops. No keys in this file (rule 9).",
+  "schedules": [
+    {
+      "id": "S-001",
+      "name": { "en": "…", "ur": "…" },
+      "what": { "en": "one line: what the alarm does", "ur": "ایک سطر: یہ alarm کیا کرتا ہے" },
+      "when": { "cron_utc": "", "doha": "", "days": "daily" },
+      "owner": "AI1-Claude1",
+      "escalation": ["AI1-Claude1", "AI2-Claude2", "AI-Zain"],
+      "watchdog_delay_min": 30,
+      "prompt_file": "_nizam/prompts/S-001.md",
+      "paused_until": "",
+      "paused_by": "",
+      "runs_done": 0,
+      "fails": 0,
+      "last_done": "",
+      "last_run": { "date": "", "at": "", "badge": "", "state": "", "note": "" }
+    }
+  ]
+}

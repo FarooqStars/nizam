@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Nizam Console</title>
-<!-- FarooqStars 2.0 — nizam.html (Nizam Console v0.1 · 13 Sep 2026)
+<!-- FarooqStars 2.0 — nizam.html (Nizam Console v0.2 · 13 Sep 2026 · schedules)
      Projects · folders (files/size from the NAS) · tasks · ideas · maintenance · admin links · new project. EN/UR. Lock = Google login. -->
 <style>
   :root{--bg:#070d1e;--card:#101a33;--line:#223055;--txt:#e9e4d6;--mut:#93a0c4;--acc:#5b8cff;--gold:#f0c060;--ok:#22c55e;--warn:#f59e0b;--bad:#ef4444}
@@ -79,6 +79,12 @@
       </details>
     </div>
 
+    <div class="card" id="sched-card">
+      <h2>⏰ <span data-en>Schedules (alarms)</span><span data-ur>Schedules (alarms)</span></h2>
+      <div class="mut"><span data-en>Same alarm in every AI account, badge differs. An alarm claims its slot first; if it is already claimed/done today or paused, it stops. Pause = that day's run is skipped by every account.</span><span data-ur>ہر AI account میں وہی alarm، badge الگ۔ alarm پہلے اپنا slot claim کرتا ہے؛ آج پہلے سے claimed/done یا paused ہو تو رُک جاتا ہے۔ Pause = اُس دن کوئی account نہیں چلتا۔</span></div>
+      <div id="sched"></div>
+    </div>
+
     <div id="projects" class="grid"></div>
     <div id="detail"></div>
   </div>
@@ -87,7 +93,7 @@
 
 <script>
 var LANG='en', REG=null, STATS=null, WHO=null;
-function setLang(l){ LANG=l; document.body.className=l; document.documentElement.lang=l; document.getElementById('b-en').className='btn'+(l==='en'?' on':''); document.getElementById('b-ur').className='btn'+(l==='ur'?' on':''); try{localStorage.setItem('nz-lang',l)}catch(e){} if(REG) renderProjects(); }
+function setLang(l){ LANG=l; document.body.className=l; document.documentElement.lang=l; document.getElementById('b-en').className='btn'+(l==='en'?' on':''); document.getElementById('b-ur').className='btn'+(l==='ur'?' on':''); try{localStorage.setItem('nz-lang',l)}catch(e){} if(REG) renderProjects(); if(SCHED) renderSched(SCHED); }
 function T(en,ur){ return LANG==='en'?en:ur; }
 function toast(t){ var e=document.getElementById('toast'); e.textContent=t; e.style.display='block'; setTimeout(function(){e.style.display='none'},2500); }
 function api(q, body){ var o=body?{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{credentials:'include'}; return fetch('api/nizam.php'+(q?'?'+q:''),o).then(function(r){return r.json().then(function(j){j.__status=r.status;return j;});}); }
@@ -97,13 +103,26 @@ function light(s){ return {green:'🟢',yellow:'🟡',red:'🔴',archived:'⚫'}
 function nm(o){ return o?(o[LANG]||o.en||''):''; }
 
 function loadAll(){
-  Promise.all([api('action=registry'), api('action=stats')]).then(function(r){
+  Promise.all([api('action=registry'), api('action=stats'), api('action=schedules')]).then(function(r){
     if (r[0].__status===401){ document.getElementById('gate').hidden=false; document.getElementById('app').hidden=true; return; }
     REG=r[0].registry; STATS=r[1].stats; document.getElementById('gate').hidden=true; document.getElementById('app').hidden=false;
     document.getElementById('statsline').textContent = STATS ? (T('NAS folders scanned: ','NAS فولڈر scan: ')+STATS.generated+' · '+STATS.data_root) : T('NAS stats not yet available (cron runs every 15 min)','NAS کے اعداد ابھی نہیں (cron ہر 15 منٹ)');
-    renderProjects();
+    renderProjects(); renderSched(r[2].schedules);
   });
 }
+var SCHED=null;
+function renderSched(sj){
+  SCHED=sj; var el=document.getElementById('sched'); if(!sj||!sj.schedules||!sj.schedules.length){ el.innerHTML='<div class="mut">'+T('No schedules yet (schedules.json is built by the NAS cron every 15 min).','ابھی کوئی schedule نہیں (schedules.json NAS cron ہر 15 منٹ بناتا ہے)۔')+'</div>'; return; }
+  var ico={paused:'⏸',claimed:'🟡',done:'✅',failed:'🔴',skipped:'⏭',waiting:'⬜'};
+  var h='<table><tr><th>'+T('Project','پروجیکٹ')+'</th><th>ID</th><th>'+T('Name','نام')+'</th><th>'+T('When (Doha)','وقت (دوحہ)')+'</th><th>'+T('Owner','ذمہ دار')+'</th><th>'+T('Today','آج')+'</th><th>'+T('Last run','آخری run')+'</th><th>'+T('Done / fails','مکمل / ناکام')+'</th><th></th></tr>';
+  sj.schedules.forEach(function(r){ var w=r.when||{}, lr=r.last_run||{};
+    h+='<tr><td>'+esc(r.project)+'</td><td style="white-space:nowrap" dir="ltr">'+esc(r.id)+'</td><td>'+esc(nm(r.name))+'<div class="mut">'+esc(nm(r.what))+'</div></td><td dir="ltr">'+esc(w.doha||'—')+' '+esc(w.days||'')+(w.status?'<div class="mut">'+esc(w.status)+'</div>':'')+'</td><td>'+esc(r.owner)+'<div class="mut">'+esc((r.escalation||[]).join(' → '))+'</div></td>';
+    h+='<td>'+(ico[r.today]||'⬜')+' '+esc(r.today)+(r.today==='paused'?'<div class="mut">→ '+esc(r.paused_until)+'</div>':'')+'</td><td dir="ltr">'+esc(lr.date||'')+' '+esc(lr.badge||'')+' '+esc(lr.state||'')+(lr.note?'<div class="mut">'+esc(lr.note)+'</div>':'')+'</td><td>'+(r.runs_done||0)+' / '+(r.fails||0)+'</td>';
+    h+='<td>'+(r.today==='paused'?'<button class="btn s" onclick="schedOp(\''+esc(r.project)+'\',\''+esc(r.id)+'\',\'resume\')">▶ '+T('Resume','چلاؤ')+'</button>':'<button class="btn s" onclick="schedOp(\''+esc(r.project)+'\',\''+esc(r.id)+'\',\'pause\',1)">⏸ 1</button> <button class="btn s" onclick="schedOp(\''+esc(r.project)+'\',\''+esc(r.id)+'\',\'pause\',2)">⏸ 2</button> <button class="btn s" onclick="schedOp(\''+esc(r.project)+'\',\''+esc(r.id)+'\',\'pause\',7)">⏸ 7</button>')+'</td></tr>'; });
+  h+='</table><div class="mut">'+T('⏸ 1 / 2 / 7 = pause for that many days (Console shows it within 15 min; the alarm itself sees it instantly).','⏸ 1 / 2 / 7 = اتنے دن pause (Console 15 منٹ میں دکھاتا ہے؛ alarm فوراً دیکھ لیتا ہے)۔')+'</div>';
+  el.innerHTML=h;
+}
+function schedOp(pid,sid,op,days){ api('',{action:'schedule',project:pid,id:sid,op:op,days:days||1}).then(function(j){ if(j.ok){ toast(T('Saved: ','محفوظ: ')+op); var r=(SCHED.schedules||[]).filter(function(x){return x.project===pid&&x.id===sid;})[0]; if(r){ Object.assign(r,j.schedule); var td=new Date(Date.now()+3*3600*1000).toISOString().slice(0,10); r.today=(r.paused_until&&r.paused_until>=td)?'paused':((r.last_run||{}).date===td?(r.last_run||{}).state:'waiting'); renderSched(SCHED);} } else toast('error: '+(j.err||'')); }); }
 function renderProjects(){
   var h=''; (REG.projects||[]).forEach(function(p){
     var st = STATS && STATS.projects[p.id] ? STATS.projects[p.id].folders : null;

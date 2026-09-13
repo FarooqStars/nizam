@@ -68,6 +68,36 @@ def plan_block(slug, lang):
     if nx: L.append(("**Next:** " if lang == "en" else "**اگلا:** ") + " · ".join(f"{t['id']} {t['title'].get(lang, t['title'].get('en',''))} ({t.get('owner','')})" for t in nx))
     return "\n".join(L) + "\n"
 
+# ---- schedules: every projects/*/_nizam/SCHEDULE.json → schedules.json (one file the gateway + Console read) ----
+today = datetime.date.today().isoformat()
+SCHED = {"generated": now, "schedules": []}
+for pr in reg["projects"]:
+    sp = os.path.join(ROOT, "projects", pr["slug"], "_nizam", "SCHEDULE.json")
+    if not os.path.exists(sp): continue
+    try: sj = json.load(open(sp, encoding="utf-8"))
+    except Exception as e: print("WARN bad SCHEDULE.json", pr["id"], e); continue
+    for sc in sj.get("schedules", []):
+        row = dict(sc); row["project"] = pr["id"]; row["slug"] = pr["slug"]; row["project_name"] = pr["name"]
+        lr = sc.get("last_run") or {}
+        row["today"] = ("paused" if sc.get("paused_until") and sc["paused_until"] >= today else
+                        lr.get("state", "") if lr.get("date") == today else "waiting")
+        SCHED["schedules"].append(row)
+json.dump(SCHED, open(os.path.join(ROOT, "schedules.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+
+def sched_block(lang):
+    if not SCHED["schedules"]: return ""
+    o = [("## ⏰ Schedules (alarms) — same alarm in every account, badge differs" if lang == "en" else "## ⏰ Schedules (alarms) — ہر account میں وہی alarm، badge الگ"), ""]
+    o.append("| " + (" | ".join(["Project", "ID", "Name", "When (Doha)", "Owner", "Today", "Last run"]) if lang == "en" else " | ".join(["پروجیکٹ", "ID", "نام", "وقت (دوحہ)", "ذمہ دار", "آج", "آخری run"])) + " |")
+    o.append("|---|---|---|---|---|---|---|")
+    ico = {"paused": "⏸", "claimed": "🟡", "done": "✅", "failed": "🔴", "skipped": "⏭", "waiting": "⬜"}
+    for r in SCHED["schedules"]:
+        w = r.get("when", {}); lr = r.get("last_run") or {}
+        o.append(f"| {r['project']} | {r['id']} | {r['name'].get(lang, r['name'].get('en',''))} | {w.get('doha') or '—'} {w.get('days','')} | {r.get('owner','')} | {ico.get(r['today'],'⬜')} {r['today']}" + (f" → {r['paused_until']}" if r['today']=='paused' else "") + f" | {lr.get('date','')} {lr.get('badge','')} {lr.get('state','')} |")
+    o.append("")
+    o.append(("Rule: an alarm first calls `nizam.php?action=schedule&op=claim`; if the answer is `already-claimed`, `already-done` or `paused` it stops. Watchdog (next badge) runs 30 min later and only acts when nobody claimed." if lang == "en" else "اصول: alarm پہلے `nizam.php?action=schedule&op=claim` کرتا ہے؛ جواب `already-claimed`، `already-done` یا `paused` ہو تو رُک جاتا ہے۔ Watchdog (اگلا badge) 30 منٹ بعد چلتا ہے اور صرف تب کام کرتا ہے جب کسی نے claim نہ کیا ہو۔"))
+    o.append("")
+    return "\n".join(o)
+
 handoffs = []
 for pr in reg["projects"]:
     tp = os.path.join(ROOT, "projects", pr["slug"], "_nizam", "TASKS.json")
@@ -86,6 +116,8 @@ def build(lang):
         for pid, t in handoffs:
             o.append(f"- **{pid}** · {t['id']} · {L(t['title'])} · → {t.get('owner','?')}")
         o.append("")
+    sb = sched_block(lang)
+    if sb: o.append(sb)
     o.append(("## AI badges" if lang=="en" else "## AI badges") + "\n" + ", ".join(a["badge"] for a in agents.get("agents", [])) + "\n")
     o.append(("## Projects" if lang=="en" else "## پروجیکٹس") + "\n")
     light = {"green": "🟢", "yellow": "🟡", "red": "🔴", "archived": "⚫"}
@@ -107,4 +139,4 @@ def build(lang):
 
 open(os.path.join(ROOT, "START.md"), "w", encoding="utf-8").write(build("en"))
 open(os.path.join(ROOT, "START.ur.md"), "w", encoding="utf-8").write(build("ur"))
-print("START.md + START.ur.md built", now, "projects:", len(reg["projects"]), "handoffs:", len(handoffs))
+print("START.md + START.ur.md + schedules.json built", now, "projects:", len(reg["projects"]), "handoffs:", len(handoffs), "schedules:", len(SCHED["schedules"]))

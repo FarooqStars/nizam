@@ -45,3 +45,9 @@ Full file replacements, never diffs. Owner works browser-first; give click paths
 `YYYY-MM-DD HH:MM · BADGE · TYPE · text · evidence`
 TYPE ∈ CLAIM · DONE · BLOCKED · HANDOFF · NOTE · IDEA · DECISION · MAINT
 Append-only. Rotate to `_nizam/archive/LOG-YYYY-MM.md` when LOG.md passes 500 lines.
+
+## Schedules (alarms) — added 13 Sep 2026
+An alarm is defined in `projects/<slug>/_nizam/SCHEDULE.json` and its prompt in `_nizam/prompts/S-00x.md`; the same prompt is installed in every account (badge + token differ). Every run: `action=schedule&op=claim` → work → `op=done|failed|skip`. `already-claimed`, `already-done`, `paused` = stop silently. Watchdog accounts run +30 min. Owner pauses from the Console. Details: `docs/SCHEDULES.md`, header: `docs/prompts/nizam-header.md`.
+
+## 3-final → server — added 13 Sep 2026
+`_nizam/DEPLOY.json` (enabled=false = dry-run) + `tools/ex4/nizam-deploy.sh` on the NAS. Blueprint: `docs/DEPLOY-BLUEPRINT.md`.

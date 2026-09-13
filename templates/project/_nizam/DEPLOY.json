@@ -1,0 +1,8 @@
+{
+  "schema": 1,
+  "enabled": false,
+  "note": "3-final → live server. enabled=false = dry-run only (LOG shows what would go). Host names and paths only — never keys (rule 9).",
+  "targets": [],
+  "include": ["**"],
+  "exclude": [".git/**", "node_modules/**", "*.bak", "*.tmp", "Thumbs.db", ".DS_Store", "desktop.ini"]
+}

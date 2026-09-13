@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Nizam 2.0 — Guide</title>
+<!-- nizam-guide.html v0.1 · 13 Sep 2026 · two complete languages (EN / UR), toggle top-right. Single file, no external assets. -->
+<style>
+  :root{--bg:#070d1e;--card:#101a33;--line:#223055;--txt:#e9e4d6;--mut:#93a0c4;--acc:#5b8cff;--gold:#f0c060;--ok:#22c55e;--warn:#f59e0b;--bad:#ef4444}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font-family:Segoe UI,system-ui,sans-serif;padding:18px 16px 70px;line-height:1.6}
+  body.ur{direction:rtl;font-family:"Noto Nastaliq Urdu","Jameel Noori Nastaleeq",Segoe UI,sans-serif;line-height:2}
+  .wrap{max-width:980px;margin:auto}
+  .top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  h1{font-size:26px;margin:0} h2{font-size:19px;margin:22px 0 8px;color:var(--gold)} h3{font-size:16px;margin:14px 0 6px}
+  .lang{display:flex;gap:6px;direction:ltr}
+  .btn{background:#1a2647;border:1px solid var(--line);color:var(--txt);padding:7px 13px;border-radius:10px;cursor:pointer;font-size:14px;font-family:Segoe UI,system-ui;text-decoration:none}
+  .btn.on{background:var(--acc);border-color:var(--acc);color:#fff}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin:12px 0}
+  .mut{color:var(--mut)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+  .box{background:#0b1226;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+  .box b{display:block;font-size:15px;margin-bottom:4px}
+  .w{border-color:var(--warn)} .s{border-color:var(--acc)} .f{border-color:var(--ok)}
+  code{background:#0b1226;border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:13px;direction:ltr;unicode-bidi:embed}
+  table{width:100%;border-collapse:collapse;font-size:14px} th,td{border-bottom:1px solid var(--line);padding:7px 8px;text-align:start;vertical-align:top}
+  svg{width:100%;height:auto;display:block;direction:ltr}
+  .step{display:flex;gap:10px;align-items:flex-start;margin:8px 0} .n{background:var(--acc);color:#fff;border-radius:50%;min-width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-weight:700}
+  .never{border-inline-start:4px solid var(--bad)} .do{border-inline-start:4px solid var(--ok)}
+  [data-en],[data-ur]{display:none} body.en [data-en]{display:revert} body.ur [data-ur]{display:revert}
+  a{color:#9cc0ff}
+  footer{margin-top:30px;color:var(--mut);font-size:13px}
+</style>
+</head>
+<body class="en">
+<div class="wrap">
+  <div class="top">
+    <h1>🧭 Nizam 2.0 — <span data-en>Guide</span><span data-ur>رہنما</span></h1>
+    <div class="lang"><button class="btn on" id="b-en" onclick="setLang('en')">English</button><button class="btn" id="b-ur" onclick="setLang('ur')">اردو</button></div>
+  </div>
+
+  <!-- ================================ ENGLISH ================================ -->
+  <div data-en>
+    <p class="mut">One page that explains the whole system: where things live, the 3-folder law, how any AI account starts and ends a session, how alarms survive when an account stops, and how a finished product reaches its server.</p>
+
+    <h2>1 · The picture</h2>
+    <div class="card">
+      <svg viewBox="0 0 960 300" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI,system-ui" font-size="14">
+        <rect x="20" y="30" width="200" height="120" rx="12" fill="#0b1226" stroke="#5b8cff"/><text x="120" y="60" fill="#e9e4d6" text-anchor="middle" font-weight="700">Any AI account</text><text x="120" y="85" fill="#93a0c4" text-anchor="middle">AI1-Claude1 · AI2-Claude2 · AI-Zain</text><text x="120" y="110" fill="#93a0c4" text-anchor="middle">"read START and continue"</text>
+        <rect x="380" y="30" width="200" height="120" rx="12" fill="#0b1226" stroke="#f0c060"/><text x="480" y="60" fill="#e9e4d6" text-anchor="middle" font-weight="700">Gateway</text><text x="480" y="85" fill="#93a0c4" text-anchor="middle">farooqstars.com/api/nizam.php</text><text x="480" y="110" fill="#93a0c4" text-anchor="middle">Google login or badge token</text>
+        <rect x="740" y="30" width="200" height="120" rx="12" fill="#0b1226" stroke="#22c55e"/><text x="840" y="60" fill="#e9e4d6" text-anchor="middle" font-weight="700">Record (private GitHub)</text><text x="840" y="85" fill="#93a0c4" text-anchor="middle">nizam-data: registry, START,</text><text x="840" y="110" fill="#93a0c4" text-anchor="middle">STATUS · LOG · TASKS · SCHEDULE</text>
+        <rect x="380" y="190" width="200" height="90" rx="12" fill="#0b1226" stroke="#22c55e"/><text x="480" y="220" fill="#e9e4d6" text-anchor="middle" font-weight="700">NAS EX4 = master copy</text><text x="480" y="245" fill="#93a0c4" text-anchor="middle">pull every 15 min → builds START</text><text x="480" y="265" fill="#93a0c4" text-anchor="middle">Y:\ = real project folders</text>
+        <rect x="20" y="190" width="200" height="90" rx="12" fill="#0b1226" stroke="#93a0c4"/><text x="120" y="220" fill="#e9e4d6" text-anchor="middle" font-weight="700">Farooq</text><text x="120" y="245" fill="#93a0c4" text-anchor="middle">start.html · nizam.html (Console)</text><text x="120" y="265" fill="#93a0c4" text-anchor="middle">PC or phone</text>
+        <rect x="740" y="190" width="200" height="90" rx="12" fill="#0b1226" stroke="#f59e0b"/><text x="840" y="220" fill="#e9e4d6" text-anchor="middle" font-weight="700">Live servers</text><text x="840" y="245" fill="#93a0c4" text-anchor="middle">Hostinger · Oracle fm2-stream</text><text x="840" y="265" fill="#93a0c4" text-anchor="middle">3-final → deploy (Phase 4b)</text>
+        <g stroke="#93a0c4" stroke-width="2" fill="none" marker-end="url(#a)"><path d="M220 90 H380"/><path d="M580 90 H740"/><path d="M840 150 V190"/><path d="M740 235 H580"/><path d="M480 190 V150"/><path d="M220 235 H380"/></g>
+        <defs><marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#93a0c4"/></marker></defs>
+      </svg>
+    </div>
+
+    <h2>2 · The 3-folder law (every project)</h2>
+    <div class="grid">
+      <div class="box w"><b><span dir="ltr">1-working</span></b>The mess. Tests, downloads, half-done things. Farooq drops everything here. Can be emptied at the end.</div>
+      <div class="box s"><b><span dir="ltr">2-source</span></b>Clean, finalized source only. The AI keeps it tidy. Nothing else is mixed in. This is what future updates start from.</div>
+      <div class="box f"><b><span dir="ltr">3-final</span></b>The deliverable, linked to the live server. Nobody edits it by hand. When it changes, the server updates itself. No junk may ever land here.</div>
+    </div>
+    <p class="mut">Where: <code>Y:\FA-00x-name\</code> on the PC = <code>\\192.168.10.28\Nizam</code> on the NAS. Plus <code>_archive</code> (never delete — archive) and <code>_nizam</code> (the record, kept in git, not on Y:).</p>
+
+    <h2>3 · The record — 6 small files per project</h2>
+    <table><tr><th>File</th><th>What it is</th><th>Who writes</th></tr>
+      <tr><td><code>STATUS.md</code></td><td>One live page: "Now", "Next", decisions, never-do list</td><td>the AI at the end of each session</td></tr>
+      <tr><td><code>LOG.md</code></td><td>Append-only line per event: <code>date · badge · CLAIM/DONE/BLOCKED/HANDOFF/NOTE · text · evidence</code></td><td>every AI, the gateway, the NAS cron</td></tr>
+      <tr><td><code>TASKS.json</code></td><td>Tasks with state, owner, phase, day, gate, evidence</td><td>AI / Console buttons</td></tr>
+      <tr><td><code>PLAN.md</code></td><td>Phases with gates (gate over date), finish line</td><td>AI (imported from a project's own plan)</td></tr>
+      <tr><td><code>SCHEDULE.json</code></td><td>Alarms of this project (see 5)</td><td>gateway on every alarm run; owner pause/resume</td></tr>
+      <tr><td><code>IDEAS.md · MAINTENANCE.md</code></td><td>Parked ideas · expiries, renewals, checks</td><td>anyone</td></tr>
+    </table>
+    <p class="mut"><code>START.md</code> / <code>START.ur.md</code> is built from all of these by the NAS every 15 minutes. Never hand-edit it.</p>
+
+    <h2>4 · One session, any AI</h2>
+    <div class="card">
+      <div class="step"><div class="n">1</div><div><b>READ</b> — START (rules, all projects, open handoffs, schedules) → the project's STATUS → LOG tail.</div></div>
+      <div class="step"><div class="n">2</div><div><b>CLAIM</b> — one LOG line "CLAIM" so no other account works on the same thing.</div></div>
+      <div class="step"><div class="n">3</div><div><b>WORK</b> — inside the folder law, under the golden rules, with evidence.</div></div>
+      <div class="step"><div class="n">4</div><div><b>WRITE</b> — LOG "DONE" or "BLOCKED", task states, STATUS "Now / Next".</div></div>
+      <div class="step"><div class="n">5</div><div><b>HANDOFF</b> — if it cannot finish: task state "handoff" + owner = next badge. START shows it at the top for everyone.</div></div>
+    </div>
+
+    <h2>5 · Alarms that survive</h2>
+    <div class="card">
+      <p>The alarm's definition lives in <code>SCHEDULE.json</code>; the <b>same prompt</b> is installed in every account (only the badge and its token differ). Every run first asks the gateway to <b>claim</b> today's slot:</p>
+      <table><tr><th>Answer</th><th>Meaning</th></tr>
+        <tr><td><code>ok</code></td><td>the slot is yours — work, then close with done / failed / skip</td></tr>
+        <tr><td><code>already-claimed</code> / <code>already-done</code></td><td>another account is on it or did it — stop silently</td></tr>
+        <tr><td><code>paused</code></td><td>Farooq pressed ⏸ in the Console — stop silently</td></tr></table>
+      <p>Account 2 runs the same alarm 30 minutes later (watchdog). If account 1 is paused or out of credits, account 2 gets <code>ok</code> and continues the SAME schedule from the same record. Current alarms: <b>FA-001 Stars daily brief</b> (04:30 Doha) and <b>FA-012 Kitab nightly</b> (details to come). Urduzaban: on demand only.</p>
+    </div>
+
+    <h2>6 · 3-final → server (Phase 4b)</h2>
+    <div class="card"><p>The NAS watches every <code>3-final</code>. When it changes, <code>nizam-deploy.sh</code> reads <code>DEPLOY.json</code> and pushes: <b>ssh/rsync</b> (Oracle over Tailscale), <b>git push</b> (Hostinger sites), or <b>deploy.php</b> (farooqstars.com). Dry-run until Farooq sets <code>enabled: true</code> per site. Junk in 3-final = refused + LOG line. Every deploy = one LOG line.</p></div>
+
+    <h2>7 · Golden rules (short)</h2>
+    <div class="grid">
+      <div class="box never"><b>Never</b>$ without a yes · a key/password/token in any file or message · deleting Farooq's files · a second Oracle VM or a reset · formatting the EX4 · hand-editing START or 3-final · changing what he did not ask</div>
+      <div class="box do"><b>Always</b>read START first · claim before work · evidence with every "done" · two separate languages, English digits · archive instead of delete · give the commit Summary / Description in the same message</div>
+    </div>
+
+    <h2>8 · Where do I click?</h2>
+    <table><tr><th>I want to…</th><th>Go to</th></tr>
+      <tr><td>see what every AI did / tell an AI to continue</td><td><a href="start.html">start.html</a> (START page, LOG + idea box)</td></tr>
+      <tr><td>see all projects, folder sizes, tasks, alarms, pause an alarm</td><td><a href="nizam.html">nizam.html</a> (Console)</td></tr>
+      <tr><td>put files into a project</td><td><code>Y:\FA-00x-…\1-working</code></td></tr>
+      <tr><td>browse the NAS from the phone</td><td>Tailscale on → <code>http://100.102.2.14:8080</code> (File Browser)</td></tr>
+      <tr><td>the daily agenda lights</td><td><a href="agenda.html">agenda.html</a></td></tr>
+      <tr><td>the public convention + tools</td><td><a href="https://github.com/farooqmusicai/nizam">github.com/farooqmusicai/nizam</a></td></tr>
+    </table>
+  </div>
+
+  <!-- ================================ URDU ================================ -->
+  <div data-ur>
+    <p class="mut">ایک صفحہ جو پورا نظام سمجھاتا ہے: چیزیں کہاں رہتی ہیں، 3 فولڈر کا قانون، کوئی بھی AI account نشست کیسے شروع اور ختم کرتا ہے، account رُک جائے تو alarm کیسے زندہ رہتا ہے، اور تیار product اپنے server تک کیسے پہنچتا ہے۔</p>
+
+    <h2>1 · پوری تصویر</h2>
+    <div class="card">
+      <svg viewBox="0 0 960 300" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI,system-ui" font-size="14">
+        <rect x="20" y="30" width="200" height="120" rx="12" fill="#0b1226" stroke="#5b8cff"/><text x="120" y="60" fill="#e9e4d6" text-anchor="middle" font-weight="700">کوئی بھی AI account</text><text x="120" y="85" fill="#93a0c4" text-anchor="middle">AI1-Claude1 · AI2-Claude2 · AI-Zain</text><text x="120" y="110" fill="#93a0c4" text-anchor="middle">"START پڑھو اور آگے چلو"</text>
+        <rect x="380" y="30" width="200" height="120" rx="12" fill="#0b1226" stroke="#f0c060"/><text x="480" y="60" fill="#e9e4d6" text-anchor="middle" font-weight="700">Gateway (دروازہ)</text><text x="480" y="85" fill="#93a0c4" text-anchor="middle">farooqstars.com/api/nizam.php</text><text x="480" y="110" fill="#93a0c4" text-anchor="middle">Google login یا badge token</text>
+        <rect x="740" y="30" width="200" height="120" rx="12" fill="#0b1226" stroke="#22c55e"/><text x="840" y="60" fill="#e9e4d6" text-anchor="middle" font-weight="700">ریکارڈ (private GitHub)</text><text x="840" y="85" fill="#93a0c4" text-anchor="middle">nizam-data: registry، START،</text><text x="840" y="110" fill="#93a0c4" text-anchor="middle">STATUS · LOG · TASKS · SCHEDULE</text>
+        <rect x="380" y="190" width="200" height="90" rx="12" fill="#0b1226" stroke="#22c55e"/><text x="480" y="220" fill="#e9e4d6" text-anchor="middle" font-weight="700">NAS EX4 = master copy</text><text x="480" y="245" fill="#93a0c4" text-anchor="middle">ہر 15 منٹ pull → START بناتا ہے</text><text x="480" y="265" fill="#93a0c4" text-anchor="middle">Y:\ = اصل project فولڈر</text>
+        <rect x="20" y="190" width="200" height="90" rx="12" fill="#0b1226" stroke="#93a0c4"/><text x="120" y="220" fill="#e9e4d6" text-anchor="middle" font-weight="700">فاروق</text><text x="120" y="245" fill="#93a0c4" text-anchor="middle">start.html · nizam.html (Console)</text><text x="120" y="265" fill="#93a0c4" text-anchor="middle">PC یا موبائل</text>
+        <rect x="740" y="190" width="200" height="90" rx="12" fill="#0b1226" stroke="#f59e0b"/><text x="840" y="220" fill="#e9e4d6" text-anchor="middle" font-weight="700">Live servers</text><text x="840" y="245" fill="#93a0c4" text-anchor="middle">Hostinger · Oracle fm2-stream</text><text x="840" y="265" fill="#93a0c4" text-anchor="middle">3-final → deploy (Phase 4b)</text>
+        <g stroke="#93a0c4" stroke-width="2" fill="none" marker-end="url(#b)"><path d="M220 90 H380"/><path d="M580 90 H740"/><path d="M840 150 V190"/><path d="M740 235 H580"/><path d="M480 190 V150"/><path d="M220 235 H380"/></g>
+        <defs><marker id="b" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#93a0c4"/></marker></defs>
+      </svg>
+    </div>
+
+    <h2>2 · 3 فولڈر کا قانون (ہر پروجیکٹ)</h2>
+    <div class="grid">
+      <div class="box w"><b><span dir="ltr">1-working</span></b>گند۔ test، download، ادھورا کام۔ فاروق صاحب سب کچھ یہیں ڈالتے ہیں۔ آخر میں خالی کیا جا سکتا ہے۔</div>
+      <div class="box s"><b><span dir="ltr">2-source</span></b>صرف صاف، final source۔ AI اسے سنبھالتا ہے۔ کچھ اور اس میں نہیں ملتا۔ آئندہ update یہیں سے شروع ہوتا ہے۔</div>
+      <div class="box f"><b><span dir="ltr">3-final</span></b>تیار product، live server سے جڑا ہوا۔ کوئی ہاتھ سے نہیں چھوتا۔ بدلے تو server خود update ہوتا ہے۔ فالتو فائل یہاں کبھی نہیں آتی۔</div>
+    </div>
+    <p class="mut">کہاں: PC پر <code>Y:\FA-00x-name\</code> = NAS پر <code>\\192.168.10.28\Nizam</code>۔ ساتھ <code>_archive</code> (delete کبھی نہیں — archive) اور <code>_nizam</code> (ریکارڈ، git میں، Y: پر نہیں)۔</p>
+
+    <h2>3 · ریکارڈ — ہر پروجیکٹ کی 6 چھوٹی فائلیں</h2>
+    <table><tr><th>فائل</th><th>یہ کیا ہے</th><th>کون لکھتا ہے</th></tr>
+      <tr><td><code>STATUS.md</code></td><td>ایک زندہ صفحہ: "Now"، "Next"، فیصلے، کبھی-نہیں کی فہرست</td><td>AI ہر نشست کے آخر میں</td></tr>
+      <tr><td><code>LOG.md</code></td><td>ہر واقعے کی ایک سطر (صرف اضافہ): <code>date · badge · CLAIM/DONE/BLOCKED/HANDOFF/NOTE · text · evidence</code></td><td>ہر AI، gateway، NAS cron</td></tr>
+      <tr><td><code>TASKS.json</code></td><td>کام: حالت، ذمہ دار، phase، day، gate، ثبوت</td><td>AI / Console بٹن</td></tr>
+      <tr><td><code>PLAN.md</code></td><td>مراحل اور gates (تاریخ سے پہلے gate)، finish line</td><td>AI (پروجیکٹ کے اپنے plan سے import)</td></tr>
+      <tr><td><code>SCHEDULE.json</code></td><td>اس پروجیکٹ کے alarms (حصہ 5)</td><td>ہر alarm run پر gateway؛ مالک pause/resume</td></tr>
+      <tr><td><code>IDEAS.md · MAINTENANCE.md</code></td><td>رکھے ہوئے خیالات · expiry، renewal، جانچ</td><td>کوئی بھی</td></tr>
+    </table>
+    <p class="mut"><code>START.md</code> / <code>START.ur.md</code> اِن سب سے NAS ہر 15 منٹ بناتا ہے۔ ہاتھ سے کبھی نہ بدلیں۔</p>
+
+    <h2>4 · ایک نشست، کوئی بھی AI</h2>
+    <div class="card">
+      <div class="step"><div class="n">1</div><div><b>READ</b> — START (اصول، سب پروجیکٹ، کھلے handoff، schedules) → پروجیکٹ کی STATUS → LOG کا آخر۔</div></div>
+      <div class="step"><div class="n">2</div><div><b>CLAIM</b> — LOG میں ایک سطر "CLAIM" تاکہ دوسرا account وہی کام نہ اٹھائے۔</div></div>
+      <div class="step"><div class="n">3</div><div><b>WORK</b> — فولڈر قانون کے اندر، سنہری اصولوں کے تحت، ثبوت کے ساتھ۔</div></div>
+      <div class="step"><div class="n">4</div><div><b>WRITE</b> — LOG "DONE" یا "BLOCKED"، tasks کی حالت، STATUS کا "Now / Next"۔</div></div>
+      <div class="step"><div class="n">5</div><div><b>HANDOFF</b> — مکمل نہ ہو سکے تو task کی حالت "handoff" + ذمہ دار = اگلا badge۔ START سب کو اوپر دکھاتا ہے۔</div></div>
+    </div>
+
+    <h2>5 · وہ alarms جو زندہ رہتے ہیں</h2>
+    <div class="card">
+      <p>alarm کی تعریف <code>SCHEDULE.json</code> میں ہے؛ <b>وہی prompt</b> ہر account میں لگا ہے (صرف badge اور اس کا token الگ)۔ ہر run پہلے gateway سے آج کا slot <b>claim</b> کرتا ہے:</p>
+      <table><tr><th>جواب</th><th>مطلب</th></tr>
+        <tr><td><code>ok</code></td><td>slot تمہارا ہے — کام کرو، پھر done / failed / skip سے بند کرو</td></tr>
+        <tr><td><code>already-claimed</code> / <code>already-done</code></td><td>دوسرا account کر رہا ہے یا کر چکا — چپ چاپ رُک جاؤ</td></tr>
+        <tr><td><code>paused</code></td><td>فاروق صاحب نے Console میں ⏸ دبایا — چپ چاپ رُک جاؤ</td></tr></table>
+      <p>Account 2 وہی alarm 30 منٹ بعد چلاتا ہے (watchdog)۔ اگر account 1 رُکا ہو یا credits ختم ہوں تو account 2 کو <code>ok</code> ملتا ہے اور وہ اُسی ریکارڈ سے وہی schedule جاری رکھتا ہے۔ موجودہ alarms: <b>FA-001 Stars daily brief</b> (04:30 دوحہ) اور <b>FA-012 کتاب — رات کی تحریر</b> (تفصیل آنی ہے)۔ اردو زبان: صرف on demand۔</p>
+    </div>
+
+    <h2>6 · 3-final → server (Phase 4b)</h2>
+    <div class="card"><p>NAS ہر <code>3-final</code> پر نظر رکھتا ہے۔ بدلے تو <code>nizam-deploy.sh</code> <code>DEPLOY.json</code> پڑھ کر بھیجتا ہے: <b>ssh/rsync</b> (Oracle، Tailscale سے)، <b>git push</b> (Hostinger سائٹس)، یا <b>deploy.php</b> (farooqstars.com)۔ جب تک فاروق صاحب ہر سائٹ پر <code>enabled: true</code> نہ کریں، صرف dry-run۔ 3-final میں فالتو فائل = انکار + LOG سطر۔ ہر deploy = ایک LOG سطر۔</p></div>
+
+    <h2>7 · سنہری اصول (مختصر)</h2>
+    <div class="grid">
+      <div class="box never"><b>کبھی نہیں</b>بغیر "ہاں" کے خرچ · کسی فائل یا پیغام میں key/password/token · فاروق صاحب کی فائل delete · دوسرا Oracle VM یا reset · EX4 format · START یا 3-final ہاتھ سے · وہ بدلنا جو نہیں کہا گیا</div>
+      <div class="box do"><b>ہمیشہ</b>پہلے START پڑھو · کام سے پہلے claim · ہر "ہو گیا" کے ساتھ ثبوت · دو الگ زبانیں، English ہندسے · delete کی جگہ archive · commit کا Summary / Description اُسی پیغام میں</div>
+    </div>
+
+    <h2>8 · میں کہاں click کروں؟</h2>
+    <table><tr><th>مجھے چاہیے…</th><th>یہاں جائیں</th></tr>
+      <tr><td>دیکھنا ہر AI نے کیا کیا / AI کو آگے چلانا</td><td><a href="start.html">start.html</a> (START صفحہ، LOG + خیال)</td></tr>
+      <tr><td>سب پروجیکٹ، فولڈر کا حجم، tasks، alarms، alarm روکنا</td><td><a href="nizam.html">nizam.html</a> (Console)</td></tr>
+      <tr><td>پروجیکٹ میں فائلیں ڈالنا</td><td><code>Y:\FA-00x-…\1-working</code></td></tr>
+      <tr><td>موبائل سے NAS دیکھنا</td><td>Tailscale on → <code>http://100.102.2.14:8080</code> (File Browser)</td></tr>
+      <tr><td>روزنامچے کی lights</td><td><a href="agenda.html">agenda.html</a></td></tr>
+      <tr><td>public convention + tools</td><td><a href="https://github.com/farooqmusicai/nizam">github.com/farooqmusicai/nizam</a></td></tr>
+    </table>
+  </div>
+
+  <footer>Nizam 2.0 · guide v0.1 · 13 Sep 2026 · <a href="https://github.com/farooqmusicai/nizam">farooqmusicai/nizam</a> (MIT)</footer>
+</div>
+<script>
+function setLang(l){ document.body.className=l; document.documentElement.lang=l; document.getElementById('b-en').className='btn'+(l==='en'?' on':''); document.getElementById('b-ur').className='btn'+(l==='ur'?' on':''); try{localStorage.setItem('nz-lang',l)}catch(e){} }
+try{ setLang(localStorage.getItem('nz-lang')||'en') }catch(e){ setLang('en') }
+</script>
+</body>
+</html>
