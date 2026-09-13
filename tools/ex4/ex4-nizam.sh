@@ -70,7 +70,7 @@ NZ=/data/Nizam; L=/var/log/nizam-sync.log
   cd $NZ/nizam-data && git pull -q 2>&1
   python3 $NZ/nizam/tools/nizam_folders.py $NZ/projects 2>&1
   python3 $NZ/nizam/tools/build_start.py 2>&1
-  git add START.md START.ur.md stats.json schedules.json projects/*/_nizam/LOG.md 2>/dev/null
+  git add -A START.md START.ur.md stats.json schedules.json projects/*/_nizam/LOG.md projects/*/0-docs 2>/dev/null
   if ! git diff --cached --quiet; then
     git commit -q -m "START + stats + schedules · ex4 $(date '+%Y-%m-%d %H:%M')" && git push -q 2>&1 && echo "pushed"
   else echo "no change"; fi

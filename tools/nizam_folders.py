@@ -38,6 +38,16 @@ for pr in reg["projects"]:
                 except OSError: continue
                 files += 1; size += st.st_size; newest = max(newest, st.st_mtime)
         ps[f] = {"files": files, "bytes": size, "last_change": datetime.datetime.fromtimestamp(newest).strftime("%Y-%m-%d %H:%M") if newest else ""}
+    # ---- inbox: documents dropped into the git repo (gateway action=doc) → move to the NAS 0-docs, then leave git ----
+    inbox = os.path.join(ROOT, "projects", pr["slug"], "0-docs")
+    if os.path.isdir(inbox):
+        for n in os.listdir(inbox):
+            src = os.path.join(inbox, n); dst = os.path.join(base, "0-docs", n)
+            if os.path.isfile(src) and not n.startswith("."):
+                try:
+                    import shutil; shutil.copy2(src, dst); os.remove(src)
+                    if UID is not None and os.geteuid() == 0: os.chown(dst, UID, GID); os.chmod(dst, 0o660)
+                except OSError as e: print("WARN inbox", pr["id"], n, e)
     # ---- 0-docs: number every document (rename NNNN-name.ext), report latest ----
     dd = os.path.join(base, "0-docs"); docs = []
     try: names = sorted(os.listdir(dd))

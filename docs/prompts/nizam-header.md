@@ -27,8 +27,9 @@ STEP C — CLOSE (always, success or not)
   failed: …&op=failed&note=<why, one line>
   skip:   …&op=skip&note=<why nothing was needed>
   (note goes in the URL: use + for spaces, no Urdu, no key). Read the JSON reply; {"ok":true} = closed.
-  If the project's STATUS.md "Now" changed, POST is not possible from a cloud run — write the change in the note and
-  the next interactive session updates STATUS.
+  A written document (a chapter, a report, notes) that must reach the project folder: POST action=doc
+  {project, name:"<name>.md", content} — it lands in Y:\<slug>\0-docs within 15 min, numbered by the NAS (highest = latest).
+  If the project's STATUS.md "Now" changed, POST action=status with the full new content; a GET-only run writes the change in the note.
 ═══════════════════════════════════════════════════════════════════════════════
 ```
 

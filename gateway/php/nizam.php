@@ -25,6 +25,8 @@
                                                    → updates that project's _nizam/SCHEDULE.json + one LOG line.
                                                      GET is allowed so a cloud alarm can call it with WebFetch (short URL).
                                                      pause / resume = owner only; claim/done/failed/skip = any badge.
+   POST {action:'doc',    project, name, content}          → drops a document (md/txt, ≤ 200 KB) into projects/<slug>/0-docs/ in git;
+                                                       the NAS cron moves it to Y:\<slug>\0-docs\ within 15 min and numbers it (NNNN-name). For cloud AIs that cannot reach the NAS.
    POST {action:'setup',  github_token}   owner only → store token (fs-var)
    POST {action:'mint',   badge}          owner only → new badge token (shown once)
    POST {action:'revoke', badge}          owner only
@@ -38,7 +40,7 @@ if (!is_file($cfg)) { echo json_encode(['ok'=>false,'err'=>'config-missing']); e
 require $cfg;
 require __DIR__ . '/fs-db.php';
 
-const NZ_VERSION = '0.2 (2026-09-13 · schedules)';
+const NZ_VERSION = '0.3 (2026-09-13 · schedules + doc inbox)';
 const NZ_OWNERS  = ['babaqatar@gmail.com', 'baba867@gmail.com'];
 const NZ_REPO    = 'farooqmusicai/nizam-data';
 const NZ_BRANCH  = 'main';
@@ -247,6 +249,18 @@ if ($action === 'status') {
   [$c, $sha] = nz_read($base . 'STATUS.md');
   $r = nz_write($base . 'STATUS.md', rtrim($content, "\n") . "\n", "STATUS $pid · $who · " . nz_doha(), $sha);
   nz_audit($who, "status $pid"); nz_out($r === true ? ['ok'=>true] : ['ok'=>false, 'err'=>$r], $r === true ? 200 : 502);
+}
+if ($action === 'doc') {
+  $name = trim((string)($in['name'] ?? '')); $content = (string)($in['content'] ?? '');
+  if (!preg_match('/^[A-Za-z0-9._ \-\x{0600}-\x{06FF}]{1,80}\.(md|txt)$/u', $name) || strpos($name, '..') !== false) nz_out(['ok'=>false, 'err'=>'name (letters/digits/-_ .md|.txt)'], 400);
+  if (strlen($content) < 10 || strlen($content) > 200000) nz_out(['ok'=>false, 'err'=>'content 10 B – 200 KB'], 400);
+  if ($looksSecret($content)) nz_out(['ok'=>false, 'err'=>'secret-refused (rule 9)'], 400);
+  $path = "projects/$slug/0-docs/" . nz_doha('Ymd-Hi') . "-$name";
+  $r = nz_write($path, rtrim($content, "\n") . "\n", "DOC $pid · $who · $name");
+  if ($r !== true) nz_out(['ok'=>false, 'err'=>$r], 502);
+  [$lc, $lsha] = nz_read($base . 'LOG.md');
+  if ($lc !== null) nz_write($base . 'LOG.md', rtrim($lc, "\n") . "\n" . nz_doha() . " · $who · NOTE · doc dropped → 0-docs · $name\n", "LOG $pid · $who · doc", $lsha);
+  nz_audit($who, "doc $pid $name"); nz_out(['ok'=>true, 'path'=>$path, 'note'=>'appears in Y:\\' . $slug . '\\0-docs within 15 min, numbered by the NAS']);
 }
 if ($action === 'task') {
   $id = $clean($in['id'] ?? '', 12); $state = $clean($in['state'] ?? '', 12);
