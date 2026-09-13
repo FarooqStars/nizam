@@ -1,4 +1,4 @@
-== 2026-09-13 11:32:28 nizam start
+== 2026-09-13 12:41:29 nizam start
 == tools
 git: git version 2.47.3
 python: Python 3.13.5
@@ -9,14 +9,17 @@ ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMnP3rs6tCccI4M+xeN1qj9jvQbXFXgGeysrYknNuqof
 == public repo nizam
 nizam: updated
 == private repo nizam-data (needs the deploy key on GitHub with write access)
-nizam-data: cloned
+nizam-data: updated
+== real data folders + Samba share Nizam (\\ex4\Nizam)
+samba: share Nizam added
 == sync script + cron (every 15 min)
 cron: /etc/cron.d/nizam installed
 == first sync now
-  == 2026-09-13 11:30:01
-  nizam-data missing
-  == 2026-09-13 11:32:44
-  START.md + START.ur.md built 2026-09-13 11:32 projects: 1 handoffs: 0
+  START.md + START.ur.md built 2026-09-13 12:30 projects: 1 handoffs: 0
   pushed
+  == 2026-09-13 12:41:37
+  python3: can't open file '/data/Nizam/nizam/tools/nizam_folders.py': [Errno 2] No such file or directory
+  START.md + START.ur.md built 2026-09-13 12:41 projects: 1 handoffs: 0
+  fatal: pathspec 'stats.json' did not match any files
 STATE=READY
-== 2026-09-13 11:32:58 nizam done
+== 2026-09-13 12:41:46 nizam done

@@ -75,7 +75,7 @@ function nz_safe_path($p){
   if ($p === '' || strpos($p, '..') !== false) return null;
   $ok = preg_match('#^projects/FA-[0-9]{3}-[a-z0-9-]+/_nizam/(STATUS|LOG|IDEAS|PLAN|MAINTENANCE)\.md$#', $p)
      || preg_match('#^projects/FA-[0-9]{3}-[a-z0-9-]+/_nizam/TASKS\.json$#', $p)
-     || in_array($p, ['START.md','START.ur.md','RULES.md','RULES.ur.md','registry.json','agents.json'], true);
+     || in_array($p, ['START.md','START.ur.md','RULES.md','RULES.ur.md','registry.json','agents.json','stats.json'], true);
   return $ok ? $p : null;
 }
 function nz_project_slug($id){
@@ -113,6 +113,7 @@ if ($action === 'start') {
   if (($in['fmt'] ?? '') === 'md') { header('Content-Type: text/markdown; charset=utf-8'); echo $md; exit; }
   nz_out(['ok'=>true, 'who'=>$who, 'lang'=>$lang, 'md'=>$md]);
 }
+if ($action === 'stats') { [$c] = nz_read('stats.json'); nz_out(['ok'=>true, 'stats'=>$c === null ? null : json_decode($c, true)]); }
 if ($action === 'registry') { [$c] = nz_read('registry.json'); if ($c === null) nz_out(['ok'=>false,'err'=>'github-read'], 502); nz_out(['ok'=>true, 'registry'=>json_decode($c, true)]); }
 if ($action === 'file') {
   $p = nz_safe_path($in['path'] ?? ''); if (!$p) nz_out(['ok'=>false, 'err'=>'path'], 400);
@@ -141,6 +142,32 @@ if ($action === 'revoke') {
   if (!$isOwner) nz_out(['ok'=>false, 'err'=>'owner-only'], 403);
   $b = (string)($in['badge'] ?? ''); $t = nz_tokens(); if (!isset($t[$b])) nz_out(['ok'=>false, 'err'=>'no such badge'], 404);
   $t[$b]['revoked'] = true; nz_tokens_save($t); nz_audit('owner', "revoke $b"); nz_out(['ok'=>true]);
+}
+
+if ($action === 'project') {
+  if (!$isOwner) nz_out(['ok'=>false, 'err'=>'owner-only'], 403);
+  $id = strtoupper(trim((string)($in['id'] ?? ''))); $slugpart = strtolower(trim((string)($in['slug'] ?? '')));
+  $en = trim((string)($in['name_en'] ?? '')); $ur = trim((string)($in['name_ur'] ?? ''));
+  if (!preg_match('/^FA-[0-9]{3}$/', $id) || !preg_match('/^[a-z0-9-]{2,40}$/', $slugpart) || $en === '' || $ur === '') nz_out(['ok'=>false, 'err'=>'id FA-000, slug a-z0-9-, name_en, name_ur required'], 400);
+  [$rc, $rsha] = nz_read('registry.json'); $reg = json_decode((string)$rc, true); if (!is_array($reg)) nz_out(['ok'=>false, 'err'=>'github-read registry'], 502);
+  foreach ($reg['projects'] as $p) if ($p['id'] === $id) nz_out(['ok'=>false, 'err'=>'id exists'], 409);
+  $slug = "$id-$slugpart"; $today = nz_doha('Y-m-d');
+  $reg['projects'][] = ['id'=>$id, 'slug'=>$slug, 'name'=>['en'=>$en, 'ur'=>$ur], 'status'=>'yellow', 'owner_ai'=>'AI1-Claude1',
+    'escalation'=>['AI1-Claude1','AI2-Claude2','AI-Zain'], 'created'=>['date'=>$today, 'by'=>'owner', 'where'=>'start.html'],
+    'finish_line'=>'', 'next_step'=>['en'=>'', 'ur'=>''], 'links'=>[], 'maintenance'=>[]];
+  $r = nz_write('registry.json', json_encode($reg, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) . "\n", "PROJECT $id created · owner", $rsha);
+  if ($r !== true) nz_out(['ok'=>false, 'err'=>$r], 502);
+  $b = "projects/$slug/_nizam/";
+  $files = [
+    'STATUS.md' => "# STATUS — $id $en\n*One live file. Rewrite \"Now\" and \"Next\" at the end of every session.*\n\n## Now ($today)\n- 🟡 created from start.html\n\n## Next\n1. …\n\n## Decisions (owner's)\n\n## Never\n",
+    'LOG.md' => "# LOG — append only · `YYYY-MM-DD HH:MM · BADGE · TYPE · text · evidence`\n" . nz_doha() . " · owner · NOTE · project created from start.html\n",
+    'IDEAS.md' => "# IDEAS — parked for later · `YYYY-MM-DD · from · idea · why`\n",
+    'PLAN.md' => "# PLAN — phases with gates (gate over date)\n| # | Phase | Delivers | Gate |\n|---|---|---|---|\n| 0 | … | … | … |\n\nFinish line: \n",
+    'TASKS.json' => "{\"tasks\": []}\n",
+    'MAINTENANCE.md' => "# MAINTENANCE — expiries, renewals, checks\n| What | Where | Due | Owner | Last done |\n|---|---|---|---|---|\n",
+  ];
+  foreach ($files as $f => $content) { $w = nz_write($b . $f, $content, "PROJECT $id · $f"); if ($w !== true) nz_out(['ok'=>false, 'err'=>"$f: $w"], 502); }
+  nz_audit('owner', "project $id"); nz_out(['ok'=>true, 'id'=>$id, 'slug'=>$slug, 'note'=>'folders on the NAS appear within 15 min (cron)']);
 }
 
 /* ============================ write (commit to GitHub) ============================ */

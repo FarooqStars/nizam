@@ -24,7 +24,12 @@ def log_tail(path, n=8):
     lines = [l for l in open(p, encoding="utf-8").read().splitlines() if l.startswith("20")]
     return "\n".join(lines[-n:])
 
+STATS = json.load(open(os.path.join(ROOT, "stats.json"), encoding="utf-8")) if os.path.exists(os.path.join(ROOT, "stats.json")) else None
 def folder_stats(path):
+    if STATS:
+        for pid, v in STATS.get("projects", {}).items():
+            if v.get("slug") == path:
+                return {k: (f["files"], f["bytes"]) for k, f in v["folders"].items() if k != "_archive"}
     out = {}
     for f in ("1-working", "2-source", "3-final"):
         d = os.path.join(ROOT, "projects", path, f); files = 0; size = 0

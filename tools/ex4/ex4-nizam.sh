@@ -40,6 +40,24 @@ else
   else echo "NEED_DEPLOY_KEY: add the public key above to GitHub → nizam-data → Settings → Deploy keys (Allow write access), then run this again"; sed 's/^/  /' /tmp/nz-clone.err | tail -3; fi
 fi
 
+echo "== real data folders + Samba share Nizam (\\\\ex4\\Nizam)"
+install -d -m 2770 -o farooq -g nasusers "$NZ/projects" 2>/dev/null || install -d -m 2775 "$NZ/projects"
+if ! grep -q '^\[Nizam\]' /etc/samba/smb.conf; then
+  cat >> /etc/samba/smb.conf <<'EOF2'
+
+[Nizam]
+   comment = Nizam 2.0 project folders (1-working / 2-source / 3-final)
+   path = /data/Nizam/projects
+   valid users = farooq @nasusers
+   read only = no
+   browseable = yes
+   create mask = 0660
+   directory mask = 2770
+   force group = nasusers
+EOF2
+  systemctl reload smbd 2>/dev/null || systemctl restart smbd; echo "samba: share Nizam added"
+else echo "samba: share Nizam present"; fi
+
 echo "== sync script + cron (every 15 min)"
 cat > /usr/local/bin/nizam-sync.sh <<'EOF'
 #!/usr/bin/env bash
@@ -49,9 +67,10 @@ NZ=/data/Nizam; L=/var/log/nizam-sync.log
   git -C $NZ/nizam pull -q 2>&1
   [ -d $NZ/nizam-data/.git ] || { echo "nizam-data missing"; exit 0; }
   cd $NZ/nizam-data && git pull -q 2>&1
+  python3 $NZ/nizam/tools/nizam_folders.py $NZ/projects 2>&1
   python3 $NZ/nizam/tools/build_start.py 2>&1
-  if ! git diff --quiet -- START.md START.ur.md; then
-    git add START.md START.ur.md && git commit -q -m "START rebuilt · ex4 $(date '+%Y-%m-%d %H:%M')" && git push -q 2>&1 && echo "pushed"
+  if ! git diff --quiet -- START.md START.ur.md stats.json; then
+    git add START.md START.ur.md stats.json && git commit -q -m "START + stats · ex4 $(date '+%Y-%m-%d %H:%M')" && git push -q 2>&1 && echo "pushed"
   else echo "no change"; fi
 } >> $L 2>&1
 tail -c 200000 $L > $L.tmp && mv $L.tmp $L

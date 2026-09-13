@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Nizam Console</title>
+<!-- FarooqStars 2.0 — nizam.html (Nizam Console v0.1 · 13 Sep 2026)
+     Projects · folders (files/size from the NAS) · tasks · ideas · maintenance · admin links · new project. EN/UR. Lock = Google login. -->
+<style>
+  :root{--bg:#070d1e;--card:#101a33;--line:#223055;--txt:#e9e4d6;--mut:#93a0c4;--acc:#5b8cff;--gold:#f0c060;--ok:#22c55e;--warn:#f59e0b;--bad:#ef4444}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font-family:Segoe UI,system-ui,sans-serif;padding:18px 14px 60px;line-height:1.55}
+  body.ur{direction:rtl;font-family:"Noto Nastaliq Urdu","Jameel Noori Nastaleeq",Segoe UI,sans-serif;line-height:1.9}
+  .wrap{max-width:1100px;margin:auto}
+  .top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  h1{font-size:24px;margin:0} h2{font-size:18px;margin:0 0 8px}
+  .lang{display:flex;gap:6px;direction:ltr}
+  .btn{background:#1a2647;border:1px solid var(--line);color:var(--txt);padding:7px 13px;border-radius:10px;cursor:pointer;font-size:14px;font-family:Segoe UI,system-ui;text-decoration:none;display:inline-block}
+  .btn.on,.btn.p{background:var(--acc);border-color:var(--acc);color:#fff} .btn.g{background:var(--gold);border-color:var(--gold);color:#111} .btn.s{padding:4px 9px;font-size:12.5px}
+  .bar{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+  .mut{color:var(--mut);font-size:13px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:12px 0}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+  .proj{border-inline-start:4px solid var(--warn)} .proj.green{border-color:var(--ok)} .proj.red{border-color:var(--bad)} .proj.archived{border-color:#555}
+  .fold{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0}
+  .fold div{background:#0b1226;border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:12.5px;direction:ltr;text-align:left}
+  .fold b{display:block;color:#c7d2fe}
+  .tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:99px;background:#1d2747;color:var(--mut);direction:ltr}
+  .tag.done{background:#123b23;color:#7ee2a0} .tag.doing{background:#3b2f12;color:#ffd27a} .tag.handoff{background:#3b1212;color:#ff9a9a}
+  table{width:100%;border-collapse:collapse;font-size:13.5px} th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:start;vertical-align:top}
+  input,select,textarea{width:100%;background:#0b1226;border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:8px;font-family:inherit;font-size:14px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:10px} @media(max-width:600px){.row{grid-template-columns:1fr}}
+  label{display:block;margin:8px 0 4px;font-size:13px;color:var(--mut)}
+  pre{background:#0b1226;border:1px solid var(--line);border-radius:10px;padding:10px;overflow:auto;font-size:12.5px;direction:ltr;text-align:left;white-space:pre-wrap}
+  .toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#1d2747;border:1px solid var(--line);padding:9px 16px;border-radius:10px;display:none;z-index:9}
+  .gate{text-align:center;padding:40px 16px}
+  details summary{cursor:pointer;color:var(--mut)}
+  [data-en],[data-ur]{display:none} body.en [data-en]{display:revert} body.ur [data-ur]{display:revert}
+  body.en span[data-en],body.ur span[data-ur]{display:inline}
+</style>
+</head>
+<body class="en">
+<div class="wrap">
+  <div class="top">
+    <h1>🧭 Nizam <span data-en>Console</span><span data-ur>کنسول</span></h1>
+    <div class="lang"><button class="btn on" id="b-en" onclick="setLang('en')">English</button><button class="btn" id="b-ur" onclick="setLang('ur')">اردو</button></div>
+  </div>
+  <div class="mut" id="who"></div>
+  <div id="gate" class="card gate" hidden>
+    <p data-en>Locked. Log in with your Google account, then come back.</p><p data-ur>بند ہے۔ Google اکاؤنٹ سے login کریں، پھر واپس آئیں۔</p>
+    <a class="btn p" href="login.html?next=nizam.html">Login</a>
+  </div>
+
+  <div id="app" hidden>
+    <div class="bar">
+      <a class="btn g" href="start.html">START</a>
+      <a class="btn" href="agenda.html"><span data-en>Agenda</span><span data-ur>روزنامچہ</span></a>
+      <button class="btn" onclick="loadAll()"><span data-en>🔄 Refresh</span><span data-ur>🔄 تازہ</span></button>
+      <a class="btn" href="http://100.102.2.14:8080" target="_blank"><span data-en>NAS files</span><span data-ur>NAS فائلیں</span></a>
+      <a class="btn" href="https://100.102.2.14:10000/" target="_blank">Webmin</a>
+      <a class="btn" href="https://github.com/farooqmusicai/nizam-data" target="_blank">nizam-data 🔒</a>
+    </div>
+    <div class="mut" id="statsline"></div>
+
+    <div class="card">
+      <details><summary><span data-en>➕ New project (creates registry entry + record files; NAS folders appear within 15 min)</span><span data-ur>➕ نیا پروجیکٹ (registry + ریکارڈ فائلیں بنتی ہیں؛ NAS فولڈر 15 منٹ میں)</span></summary>
+        <form onsubmit="return newProject(event)">
+          <div class="row">
+            <div><label>ID</label><input id="p-id" placeholder="FA-011" required></div>
+            <div><label>slug (a-z, 0-9, -)</label><input id="p-slug" placeholder="my-project" required></div>
+          </div>
+          <div class="row">
+            <div><label data-en>Name (English)</label><label data-ur>نام (English)</label><input id="p-en" required></div>
+            <div><label data-en>Name (Urdu)</label><label data-ur>نام (اردو)</label><input id="p-ur" required></div>
+          </div>
+          <div class="bar"><button class="btn p" type="submit"><span data-en>Create</span><span data-ur>بنائیں</span></button></div>
+        </form>
+      </details>
+    </div>
+
+    <div id="projects" class="grid"></div>
+    <div id="detail"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+var LANG='en', REG=null, STATS=null, WHO=null;
+function setLang(l){ LANG=l; document.body.className=l; document.documentElement.lang=l; document.getElementById('b-en').className='btn'+(l==='en'?' on':''); document.getElementById('b-ur').className='btn'+(l==='ur'?' on':''); try{localStorage.setItem('nz-lang',l)}catch(e){} if(REG) renderProjects(); }
+function T(en,ur){ return LANG==='en'?en:ur; }
+function toast(t){ var e=document.getElementById('toast'); e.textContent=t; e.style.display='block'; setTimeout(function(){e.style.display='none'},2500); }
+function api(q, body){ var o=body?{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{credentials:'include'}; return fetch('api/nizam.php'+(q?'?'+q:''),o).then(function(r){return r.json().then(function(j){j.__status=r.status;return j;});}); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+function human(b){ var u=['B','KB','MB','GB','TB'],i=0; b=+b||0; while(b>=1024&&i<4){b/=1024;i++;} return (i?b.toFixed(1):b)+' '+u[i]; }
+function light(s){ return {green:'🟢',yellow:'🟡',red:'🔴',archived:'⚫'}[s]||'⚪'; }
+function nm(o){ return o?(o[LANG]||o.en||''):''; }
+
+function loadAll(){
+  Promise.all([api('action=registry'), api('action=stats')]).then(function(r){
+    if (r[0].__status===401){ document.getElementById('gate').hidden=false; document.getElementById('app').hidden=true; return; }
+    REG=r[0].registry; STATS=r[1].stats; document.getElementById('gate').hidden=true; document.getElementById('app').hidden=false;
+    document.getElementById('statsline').textContent = STATS ? (T('NAS folders scanned: ','NAS فولڈر scan: ')+STATS.generated+' · '+STATS.data_root) : T('NAS stats not yet available (cron runs every 15 min)','NAS کے اعداد ابھی نہیں (cron ہر 15 منٹ)');
+    renderProjects();
+  });
+}
+function renderProjects(){
+  var h=''; (REG.projects||[]).forEach(function(p){
+    var st = STATS && STATS.projects[p.id] ? STATS.projects[p.id].folders : null;
+    h+='<div class="card proj '+esc(p.status)+'"><h2>'+light(p.status)+' '+esc(p.id)+' — '+esc(nm(p.name))+'</h2>';
+    h+='<div class="mut">'+T('owner','ذمہ دار')+': <b>'+esc(p.owner_ai)+'</b> · '+T('chain','chain')+': '+esc((p.escalation||[]).join(' → '))+' · '+T('finish line','finish line')+': '+esc(p.finish_line||'—')+'</div>';
+    h+='<div class="mut">'+T('created','بنا')+': '+esc((p.created||{}).date||'')+' · '+esc((p.created||{}).by||'')+' · '+esc((p.created||{}).where||'')+'</div>';
+    h+='<div class="fold">'; ['1-working','2-source','3-final'].forEach(function(f){ var s=st?st[f]:null; h+='<div><b>'+f+'</b>'+(s?(s.files+' files · '+human(s.bytes)+(s.last_change?'<br>'+s.last_change:'')):'—')+'</div>'; }); h+='</div>';
+    if (nm(p.next_step)) h+='<div>➡️ '+esc(nm(p.next_step))+'</div>';
+    if (p.links&&p.links.length) h+='<div class="bar">'+p.links.map(function(l){return '<a class="btn s" href="'+esc(l.url)+'" target="_blank">'+esc(nm(l.label))+'</a>';}).join('')+'</div>';
+    h+='<div class="bar"><button class="btn s p" onclick="openProject(\''+esc(p.id)+'\')">'+T('Open record','ریکارڈ کھولیں')+'</button>'+(st?'<span class="tag">\\\\ex4\\Nizam\\'+esc(p.slug)+'</span>':'')+'</div>';
+    h+='</div>';
+  });
+  document.getElementById('projects').innerHTML=h;
+}
+function openProject(id){
+  var p=(REG.projects||[]).filter(function(x){return x.id===id;})[0]; if(!p) return;
+  var base='projects/'+p.slug+'/_nizam/';
+  Promise.all(['STATUS.md','TASKS.json','IDEAS.md','MAINTENANCE.md','LOG.md'].map(function(f){return api('action=file&path='+encodeURIComponent(base+f));})).then(function(r){
+    var status=r[0].ok?r[0].content:'', tasks=r[1].ok?JSON.parse(r[1].content).tasks||[]:[], ideas=r[2].ok?r[2].content:'', maint=r[3].ok?r[3].content:'', log=r[4].ok?r[4].content:'';
+    var h='<div class="card"><h2>'+esc(id)+' — '+esc(nm(p.name))+'</h2>';
+    h+='<h3>'+T('Tasks','کام')+'</h3><table><tr><th>ID</th><th>'+T('Task','کام')+'</th><th>'+T('State','حالت')+'</th><th>'+T('Owner','ذمہ دار')+'</th><th>'+T('Due','تاریخ')+'</th><th></th></tr>';
+    tasks.forEach(function(t){ h+='<tr><td>'+esc(t.id)+'</td><td>'+esc(nm(t.title))+(t.evidence?'<div class="mut">'+esc(t.evidence)+'</div>':'')+'</td><td><span class="tag '+esc(t.state)+'">'+esc(t.state)+'</span></td><td>'+esc(t.owner)+'</td><td>'+esc(t.due||'')+'</td><td>'+(t.state!=='done'?'<button class="btn s" onclick="setTask(\''+esc(id)+'\',\''+esc(t.id)+'\',\'done\')">✓</button> <button class="btn s" onclick="setTask(\''+esc(id)+'\',\''+esc(t.id)+'\',\'handoff\')">→</button>':'')+'</td></tr>'; });
+    h+='</table>';
+    h+='<h3>STATUS.md</h3><pre>'+esc(status)+'</pre>';
+    h+='<h3>'+T('Ideas','خیالات')+'</h3><pre>'+esc(ideas)+'</pre>';
+    h+='<h3>'+T('Maintenance','دیکھ بھال')+'</h3><pre>'+esc(maint)+'</pre>';
+    h+='<h3>LOG (tail)</h3><pre>'+esc(log.split('\n').slice(-12).join('\n'))+'</pre>';
+    h+='<div class="bar"><a class="btn" href="start.html">'+T('Write a LOG line / idea → START page','LOG سطر / خیال لکھیں → START صفحہ')+'</a></div></div>';
+    document.getElementById('detail').innerHTML=h; document.getElementById('detail').scrollIntoView({behavior:'smooth'});
+  });
+}
+function setTask(pid,tid,state){ api('',{action:'task',project:pid,id:tid,state:state}).then(function(j){ if(j.ok){toast(T('Saved','محفوظ')); openProject(pid);} else toast('error: '+(j.err||'')); }); }
+function newProject(e){ e.preventDefault(); api('',{action:'project',id:document.getElementById('p-id').value,slug:document.getElementById('p-slug').value,name_en:document.getElementById('p-en').value,name_ur:document.getElementById('p-ur').value}).then(function(j){ if(j.ok){ toast(T('Created ','بن گیا ')+j.slug); loadAll(); } else toast('error: '+(j.err||'')); }); return false; }
+api('action=whoami').then(function(j){ if(j.__status===401){document.getElementById('gate').hidden=false;return;} WHO=j; document.getElementById('who').textContent=(LANG==='en'?'opened as: ':'کھلا بطور: ')+j.who; loadAll(); });
+try{ setLang(localStorage.getItem('nz-lang')||'en') }catch(e){ setLang('en') }
+</script>
+</body>
+</html>
