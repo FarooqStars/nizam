@@ -8,15 +8,24 @@ Default DATA_ROOT = /data/Nizam/projects
 """
 import json, os, sys, datetime
 ROOT = os.getcwd()
+# folders must belong to the Samba user, not root (cron runs as root): farooq:nasusers, dirs 2770
+try:
+    import pwd, grp; UID = pwd.getpwnam("farooq").pw_uid; GID = grp.getgrnam("nasusers").gr_gid
+except Exception: UID = GID = None
+def mk(d):
+    new = not os.path.isdir(d); os.makedirs(d, exist_ok=True)
+    if new and UID is not None and os.geteuid() == 0:
+        try: os.chown(d, UID, GID); os.chmod(d, 0o2770)
+        except OSError: pass
 DATA = sys.argv[1] if len(sys.argv) > 1 else "/data/Nizam/projects"
 reg = json.load(open(os.path.join(ROOT, "registry.json"), encoding="utf-8"))
 FOLDERS = ("1-working", "2-source", "3-final", "_archive")
 stats = {"generated": datetime.datetime.now().strftime("%Y-%m-%d %H:%M"), "data_root": DATA, "projects": {}}
 for pr in reg["projects"]:
-    base = os.path.join(DATA, pr["slug"]); os.makedirs(base, exist_ok=True)
+    base = os.path.join(DATA, pr["slug"]); mk(base)
     ps = {}
     for f in FOLDERS:
-        d = os.path.join(base, f); os.makedirs(d, exist_ok=True)
+        d = os.path.join(base, f); mk(d)
         files = 0; size = 0; newest = 0
         for r, _, fs in os.walk(d):
             for x in fs:
