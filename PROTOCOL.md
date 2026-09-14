@@ -54,3 +54,6 @@ An alarm is defined in `projects/<slug>/_nizam/SCHEDULE.json` and its prompt in 
 
 ## 0-docs — added 13 Sep 2026
 Every project has a 4th folder `0-docs` for all its documents (md/txt/docx/pdf). The NAS cron (`tools/nizam_folders.py`) numbers each file `NNNN-name.ext`; highest = latest; `stats.json` carries count + latest per project, START and the Console show it. Reader: `gateway/php/nizam-reader.html` (reads Y:\ locally in the browser, remembers the folder, renders md/txt/docx/pdf).
+
+## Conversations — added 14 Sep 2026
+Every session ends with a written record of the conversation (decisions, commands, files, results, open items) saved to `Conversations/YYYY-MM-DD/<badge>/NNNN-topic.md` on the NAS (one folder per day, one per badge). The owner may drop chat exports there too. The record, every project's `0-docs` and every `_nizam` are searchable by any word (`/search?q=` on the files gateway; Console search box). The NAS is where every AI writes; the NAS commits the private record to GitHub every 15 min — the owner's local clone is Pull only.

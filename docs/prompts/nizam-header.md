@@ -30,6 +30,8 @@ STEP C — CLOSE (always, success or not)
   A written document (a chapter, a report, notes) that must reach the project folder: POST action=doc
   {project, name:"<name>.md", content} — it lands in Y:\<slug>\0-docs within 15 min, numbered by the NAS (highest = latest).
   If the project's STATUS.md "Now" changed, POST action=status with the full new content; a GET-only run writes the change in the note.
+  CONVERSATION RECORD (rule 13): write this session's record (decisions, commands, files, results, open items) with the files gateway to
+  projects/Conversations/<YYYY-MM-DD Doha>/{{BADGE}}/NNNN-<topic>.md (next free number; token {{NZF_TOKEN}} in header X-Nizam-Token).
 ═══════════════════════════════════════════════════════════════════════════════
 ```
 
@@ -57,5 +59,7 @@ cloud run میں اوزار: WebFetch (صرف GET، URL ≤ 229 حروف) + چھ
 قدم C — بند کرو (ہمیشہ، کامیاب ہو یا نہ)
   done: …&op=done&note=<ایک سطر English/ہندسے، ≤ 120 حروف>   failed: …&op=failed&note=<وجہ>   skip: …&op=skip&note=<کیوں کچھ نہیں کرنا پڑا>
   (note URL میں جاتا ہے: space کی جگہ +، اردو نہیں، key نہیں)۔ جواب پڑھو؛ {"ok":true} = بند۔
+  گفتگو کا ریکارڈ (اصول 13): اس نشست کا ریکارڈ (فیصلے، commands، فائلیں، نتائج، باقی کام) files gateway سے
+  projects/Conversations/<YYYY-MM-DD دوحہ>/{{BADGE}}/NNNN-<topic>.md میں لکھو (اگلا خالی نمبر؛ token {{NZF_TOKEN}} header X-Nizam-Token میں)۔
 ═══════════════════════════════════════════════════════════════════════════════
 ```

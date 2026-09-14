@@ -10,6 +10,7 @@
 - 🔁 **Session کا چکر** — READ → CLAIM → WORK → WRITE → HANDOFF۔ LOG صرف آگے بڑھتا ہے، ہر پروجیکٹ کی ایک زندہ STATUS۔
 - 🔐 **راز کبھی اندر نہیں** — keys، passwords، tokens vault میں رہتے ہیں، ریکارڈ میں کبھی نہیں۔ ریکارڈ کوئی بھی AI محفوظ طریقے سے پڑھ سکتا ہے۔
 - 🖥️ **گھر کا مرکز** — پروجیکٹ ایک NAS پر رہتے ہیں (واحد سچ)؛ ایک چھوٹا token والا files gateway اور login والا console ہر AI account کو cloud سے NAS پڑھنے، لکھنے اور جانچنے دیتا ہے — کوئی PC چلتا رکھنا ضروری نہیں۔
+- 🗂️ **گفتگو کا ریکارڈ** — ہر نشست NAS پر `Conversations/YYYY-MM-DD/<badge>/` میں لکھے ہوئے ریکارڈ پر ختم ہوتی ہے؛ پورا ریکارڈ (گفتگو، دستاویزات، STATUS/LOG) کسی بھی لفظ سے searchable۔
 - 🌍 **دو زبانیں** — English اور اردو، الگ الگ؛ اعداد ہر جگہ English digits۔
 - 🔌 **کھلا** — کوئی بھی نیا AI tool یا agent ایک badge دے کر اور START کی طرف موڑ کر شامل کریں۔
 

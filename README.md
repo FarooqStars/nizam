@@ -13,6 +13,7 @@ The AI is replaceable; the memory is not.
 - 🔁 **Session loop** — READ → CLAIM → WORK → WRITE → HANDOFF. Append-only LOG, one live STATUS per project.
 - 🔐 **Secrets never enter** — keys, passwords and tokens live in a vault, never in the record. The record is safe to read by any AI.
 - 🖥️ **Home base** — the projects live on a NAS (the single source of truth); a small token-protected files gateway and a login console let every AI account read, write and check the NAS from the cloud — no PC has to stay on.
+- 🗂️ **Conversations** — every session ends with a written record in `Conversations/YYYY-MM-DD/<badge>/` on the NAS; the whole record (conversations, documents, STATUS/LOG) is searchable by any word.
 - 🌍 **Two languages** — English and Urdu, kept separate, English digits everywhere.
 - 🔌 **Open** — add any AI tool or agent by giving it a badge and pointing it at START.
 
