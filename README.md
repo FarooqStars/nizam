@@ -6,13 +6,13 @@ Nizam (Urdu: *system / order*) is a plain-files convention plus a few small tool
 several AI assistants (Claude, ChatGPT, Gemini, local models…) on many projects **without ever losing the thread**.
 The AI is replaceable; the memory is not.
 
-- 📁 **Folder law** — every project has exactly `1-working/` (the mess), `2-source/` (code for future releases),
-  `3-final/` (the delivered product) and `_nizam/` (the record: STATUS, LOG, IDEAS, PLAN, TASKS, MAINTENANCE).
+- 📁 **Folder law** — every project has exactly four folders plus the record: `0-docs/` (**first stop of every project** — ALL its documents: .md, .txt, .docx, .pdf; nothing project-related is stored anywhere else; the NAS numbers each file `0001-`, `0002-`… so the highest number is always the latest), `1-working/` (the mess), `2-source/` (clean code for future releases), `3-final/` (the delivered product, linked to the live server) and `_nizam/` (the record: STATUS, LOG, IDEAS, PLAN, TASKS, MAINTENANCE, SCHEDULE).
 - 🧭 **START page** — generated from all `_nizam/` records; the *only* thing an AI needs to read to continue.
 - 🏷️ **AI badges** — every write is attributed (`AI1-Claude1`, `AI-Zain`…); a task has an owner and an escalation
   chain, so when one AI cannot (or its credits end) the next one picks it up.
 - 🔁 **Session loop** — READ → CLAIM → WORK → WRITE → HANDOFF. Append-only LOG, one live STATUS per project.
 - 🔐 **Secrets never enter** — keys, passwords and tokens live in a vault, never in the record. The record is safe to read by any AI.
+- 🖥️ **Home base** — the projects live on a NAS (the single source of truth); a small token-protected files gateway and a login console let every AI account read, write and check the NAS from the cloud — no PC has to stay on.
 - 🌍 **Two languages** — English and Urdu, kept separate, English digits everywhere.
 - 🔌 **Open** — add any AI tool or agent by giving it a badge and pointing it at START.
 
@@ -25,7 +25,7 @@ nizam/                     ← this public repo (convention + tools + docs; no p
   PROTOCOL.md              the rules every AI follows
   AGENTS.md                entry file for tools that auto-read AGENTS.md
   registry.schema.json     shape of registry.json
-  templates/project/       copy this to start a project
+  templates/project/       copy this to start a project (0-docs · 1-working · 2-source · 3-final · _nizam)
   tools/build_start.py     registry + records → START.md
 nizam-data/                ← a PRIVATE repo: your registry, your projects' _nizam/ records, START.md
 ```
