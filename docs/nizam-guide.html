@@ -58,6 +58,18 @@
       </svg>
     </div>
 
+    <h2>20 Sep 2026 · Website source, backup and GitHub rule</h2>
+    <div class="card">
+      <p><b>NAS Nizam is the master record and backup location.</b> GitHub contains sanitized source only; PC folders are working clones.</p>
+      <ul>
+        <li>EX4 runs website backup v2 at 02:30 Doha: root-only raw restore copy + clean <code>2-source</code>.</li>
+        <li>Never put credentials, databases, server backups, private config, runtime WAV/PCM/MP4, generated cards or rolling logs in GitHub.</li>
+        <li>Private website repos: <code>farooqstars-2.0</code>, <code>farooqmusic-website</code>, <code>mymandoob-website</code>.</li>
+        <li>PC task <code>Nizam-Git-Safe-Pull</code> runs every 30 minutes: fetch + fast-forward-only pull. It never pushes, merges, resets or overwrites local work.</li>
+        <li>If a repository is dirty, ahead or diverged, automation writes BLOCKED and stops. Preserve unique work before cleanup.</li>
+        <li>Current hardware caution: if Console shows RAID recovery/resync, inspect Storage and do not reboot EX4.</li>
+      </ul>
+    </div>
     <h2>2 · The folder law (every project)</h2>
     <div class="grid">
       <div class="box"><b><span dir="ltr">0-docs</span></b><b>First stop of every project.</b> ALL its documents: .md · .txt · .docx · .pdf — nothing project-related is stored anywhere else. The NAS numbers each file <code>0001-</code>, <code>0002-</code>… — highest number = latest. Read them in <a href="nizam-reader.html">Nizam Docs</a>.</div>
@@ -83,7 +95,7 @@
       <div class="step"><div class="n">1</div><div><b>READ</b> — START (rules, all projects, open handoffs, schedules) → the project's STATUS → LOG tail.</div></div>
       <div class="step"><div class="n">2</div><div><b>CLAIM</b> — one LOG line "CLAIM" so no other account works on the same thing.</div></div>
       <div class="step"><div class="n">3</div><div><b>WORK</b> — inside the folder law, under the golden rules, with evidence.</div></div>
-      <div class="step"><div class="n">4</div><div><b>WRITE</b> — LOG "DONE" or "BLOCKED", task states, STATUS "Now / Next".</div></div>
+      <div class="step"><div class="n">4</div><div><b>WRITE — STRICT</b> — update STATUS "Now / Next", append LOG "DONE" or "BLOCKED", update TASKS when needed, and write the Conversation record. Cards read STATUS + LOG; Conversation alone does not update a card.</div></div>
       <div class="step"><div class="n">5</div><div><b>HANDOFF</b> — if it cannot finish: task state "handoff" + owner = next badge. START shows it at the top for everyone.</div></div>
     </div>
 
@@ -138,6 +150,18 @@
       </svg>
     </div>
 
+    <h2>20 ستمبر 2026 · website source، backup اور GitHub کا قانون</h2>
+    <div class="card">
+      <p><b>NAS Nizam مرکزی ریکارڈ اور backup جگہ ہے۔</b> GitHub میں صرف صاف source؛ PC folders کام کی clones ہیں۔</p>
+      <ul>
+        <li>EX4 روزانہ 02:30 دوحہ website backup v2 چلاتا ہے: root-only مکمل restore copy + صاف <code>2-source</code>۔</li>
+        <li>GitHub میں credentials، database، server backups، private config، runtime WAV/PCM/MP4، generated cards یا بدلتے logs کبھی نہ ڈالیں۔</li>
+        <li>نجی website repos: <code>farooqstars-2.0</code>، <code>farooqmusic-website</code>، <code>mymandoob-website</code>۔</li>
+        <li>PC task <code>Nizam-Git-Safe-Pull</code> ہر 30 منٹ fetch + fast-forward-only pull کرتا ہے؛ کبھی push، merge، reset یا overwrite نہیں۔</li>
+        <li>repository dirty، ahead یا diverged ہو تو automation BLOCKED لکھ کر رک جاتا ہے؛ صفائی سے پہلے منفرد کام محفوظ کریں۔</li>
+        <li>اگر Console میں RAID recovery/resync دکھے تو پہلے Storage دیکھیں؛ EX4 reboot نہ کریں۔</li>
+      </ul>
+    </div>
     <h2>2 · فولڈر کا قانون (ہر پروجیکٹ)</h2>
     <div class="grid">
       <div class="box"><b><span dir="ltr">0-docs</span></b><b>ہر پروجیکٹ کا پہلا پڑاؤ۔</b> اُس کی ساری دستاویزات: .md · .txt · .docx · .pdf — پروجیکٹ سے متعلق کوئی فائل کہیں اور نہیں رکھی جاتی۔ NAS ہر فائل کو <code>0001-</code>، <code>0002-</code>… نمبر دیتا ہے — سب سے بڑا نمبر = تازہ ترین۔ پڑھنے کے لیے <a href="nizam-reader.html">Nizam Docs</a>۔</div>
@@ -163,7 +187,7 @@
       <div class="step"><div class="n">1</div><div><b>READ</b> — START (اصول، سب پروجیکٹ، کھلے handoff، schedules) → پروجیکٹ کی STATUS → LOG کا آخر۔</div></div>
       <div class="step"><div class="n">2</div><div><b>CLAIM</b> — LOG میں ایک سطر "CLAIM" تاکہ دوسرا account وہی کام نہ اٹھائے۔</div></div>
       <div class="step"><div class="n">3</div><div><b>WORK</b> — فولڈر قانون کے اندر، سنہری اصولوں کے تحت، ثبوت کے ساتھ۔</div></div>
-      <div class="step"><div class="n">4</div><div><b>WRITE</b> — LOG "DONE" یا "BLOCKED"، tasks کی حالت، STATUS کا "Now / Next"۔</div></div>
+      <div class="step"><div class="n">4</div><div><b>WRITE — سخت قانون</b> — STATUS کا "Now / Next" update، LOG میں "DONE" یا "BLOCKED"، ضرورت پر TASKS، اور Conversation record لازماً لکھیں۔ Card، STATUS + LOG سے بنتا ہے؛ صرف Conversation سے card update نہیں ہوتا۔</div></div>
       <div class="step"><div class="n">5</div><div><b>HANDOFF</b> — مکمل نہ ہو سکے تو task کی حالت "handoff" + ذمہ دار = اگلا badge۔ START سب کو اوپر دکھاتا ہے۔</div></div>
     </div>
 
@@ -200,7 +224,7 @@
     </table>
   </div>
 
-  <footer>Nizam 2.0 · guide v0.1 · 13 Sep 2026 · <a href="https://github.com/farooqmusicai/nizam">farooqmusicai/nizam</a> (MIT)</footer>
+  <footer>Nizam 2.0 · guide v0.2 · 20 Sep 2026 · <a href="https://github.com/farooqmusicai/nizam">farooqmusicai/nizam</a> (MIT)</footer>
 </div>
 <script>
 function setLang(l){ document.body.className=l; document.documentElement.lang=l; document.getElementById('b-en').className='btn'+(l==='en'?' on':''); document.getElementById('b-ur').className='btn'+(l==='ur'?' on':''); try{localStorage.setItem('nz-lang',l)}catch(e){} }
